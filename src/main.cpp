@@ -25,6 +25,10 @@ int main() {
     gpioSetMode(LED_PIN, PI_OUTPUT);  // set pin as output
     #endif
 
+    #ifdef __linux__
+    std::cout << "Running on RP" << std::endl;
+    #endif
+
     UserManager user_manager = UserManager{"../res/test_data.csv"};
     user_manager.printUsers();
 
