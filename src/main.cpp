@@ -102,12 +102,11 @@ int main() {
                 break;
         } 
 
-
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
     
     gpioTerminate();  // cleanup pigpio on exit
-
+    input.detach();
     return 0;
 }
 
