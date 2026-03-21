@@ -6,6 +6,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <atomic>
 
 
 #ifdef __linux__
@@ -15,12 +16,10 @@
 #define INPUT_PIN 18  // change this to whatever pin you use
 #define RESET_PIN 16  // change this to whatever pin you use
 
-std::atomic<bool> run = true;
-std::atomic<bool> pay = false;
 std::atomic<ClCommand> cl_command = ClCommand{0};
 
 
-void inputThread() {
+void inputThread(std::atomic<bool>& run, std::atomic<ClCommand>& cl_command) {
     std::string input;
     while (run) {
         std::getline(std::cin, input);
@@ -57,8 +56,11 @@ int main() {
     bool input_pressed = false;
     bool reset_pressed = false;
 
+    std::atomic<bool> run = true;
+    std::atomic<ClCommand> cl_command = ClCommand::NONE;
+
     // --- --- --- PROGRAM LOOP --- --- ---
-    std::thread input(inputThread);
+    std::thread input(inputThread, std::ref(run), std::ref(cl_command));
 
     while (run) {
         if (gpioRead(RESET_PIN) && !reset_pressed) {
