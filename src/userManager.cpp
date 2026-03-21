@@ -67,6 +67,16 @@ void UserManager::saveData() {
     file.close();
 }
 
+User& UserManager::getUser(const std::string& rfid) {
+    for (User& i_user : getUsers()) {
+        if (i_user.getRFID() == rfid) {
+            return i_user;
+        }
+    }
+
+    throw std::runtime_error("User not found: " + rfid);
+}
+
 // void UserManager::writeUserData(unsigned int index) {
 
 // }

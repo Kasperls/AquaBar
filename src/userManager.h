@@ -19,6 +19,8 @@ class UserManager
         std::vector<User>& getUsers();
         const std::vector<User>& getUsers() const;
 
+        User& getUser(const std::string& rfid);
+
         void printUsers();
 
         void saveData();

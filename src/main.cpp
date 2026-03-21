@@ -7,6 +7,7 @@
 #include <thread>
 #include <chrono>
 #include <atomic>
+#include <mutex>
 
 
 #ifdef __linux__
@@ -19,15 +20,25 @@
 std::atomic<ClCommand> cl_command = ClCommand{0};
 
 
-void inputThread(std::atomic<bool>& run, std::atomic<ClCommand>& cl_command) {
+void inputThread(
+    std::atomic<bool>& run, 
+    std::atomic<ClCommand>& cl_command,
+    std::mutex& cl_data_mutex,
+    std::string& cl_data
+) {
     std::string input;
     while (run) {
         std::getline(std::cin, input);
-        std::cout << input << std::endl;
+        // std::cout << input << std::endl;
         if (input == "q") {
             cl_command = ClCommand::QUIT;
+            run = false;
         }
         if (input.size() == 10) {
+            {
+                std::lock_guard<std::mutex> lock(cl_data_mutex);
+                cl_data = input;
+            }
             cl_command = ClCommand::RFID_SCANNED;
         }
     }
@@ -58,11 +69,20 @@ int main() {
 
     std::atomic<bool> run = true;
     std::atomic<ClCommand> cl_command = ClCommand::NONE;
+    std::string cl_data;
+    std::mutex cl_data_mutex;
 
     // --- --- --- PROGRAM LOOP --- --- ---
-    std::thread input(inputThread, std::ref(run), std::ref(cl_command));
+    std::thread input(
+        inputThread, 
+        std::ref(run), 
+        std::ref(cl_command),
+        std::ref(cl_data),
+        std::ref(cl_data_mutex)
+    );
 
     while (run) {
+        // --- --- --- HARDWARE INTERFACE --- --- ---
         if (gpioRead(RESET_PIN) && !reset_pressed) {
             std::cout << "Reset pressed!" << std::endl;
             std::cout << "Value reset! " << std::endl;
@@ -86,7 +106,7 @@ int main() {
             input_pressed = false;
 
         }
-
+        // --- --- --- COMMAND LINE INTERFACE --- --- ---
         switch (cl_command) {
             case ClCommand::NONE:
                 break;
@@ -97,7 +117,14 @@ int main() {
                 break;
             
             case ClCommand::RFID_SCANNED:
-                std::cout << "Card scanned!" << std::endl;
+                std::string rfid_data;
+                {
+                    std::lock_guard<std::mutex> lock(cl_data_mutex);
+                    rfid_data = cl_data;
+                }
+
+                std::cout << "Card scanned! RFID was: " << rfid_data << std::endl;
+
                 cl_command = ClCommand::NONE;
                 break;
         } 
