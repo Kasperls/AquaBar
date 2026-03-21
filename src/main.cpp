@@ -33,16 +33,18 @@ int main() {
     bool run = true;
 
     int value = 0;
-    // bool pressed = false;
+    bool pressed = false;
 
     // --- --- --- PROGRAM LOOP --- --- ---
     while (run) {
-        if (gpioRead(INPUT_PIN)) {
+        if (gpioRead(INPUT_PIN) && !pressed) {
             value += 35;
             std::cout << "Button pressed!" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(800));
-
-            // pressed = true;
+            pressed = true;
+        }
+        if (!gpioRead(INPUT_PIN) && pressed) {
+            std::cout << "Button reset!" << std::endl;
+            pressed = false;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
