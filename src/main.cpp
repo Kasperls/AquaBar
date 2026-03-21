@@ -77,8 +77,8 @@ int main() {
         inputThread, 
         std::ref(run), 
         std::ref(cl_command),
-        std::ref(cl_data),
-        std::ref(cl_data_mutex)
+        std::ref(cl_data_mutex),
+        std::ref(cl_data)
     );
 
     while (run) {
