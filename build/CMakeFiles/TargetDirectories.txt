@@ -1,3 +1,0 @@
-C:/Users/kaspe/cpp/aqua_bar/build/CMakeFiles/RFIDBar.dir
-C:/Users/kaspe/cpp/aqua_bar/build/CMakeFiles/edit_cache.dir
-C:/Users/kaspe/cpp/aqua_bar/build/CMakeFiles/rebuild_cache.dir
