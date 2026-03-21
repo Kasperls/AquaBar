@@ -87,7 +87,7 @@ int main() {
 
         }
 
-        switch () {
+        switch (cl_command) {
             case ClCommand::NONE:
                 break;
 
