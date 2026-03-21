@@ -15,11 +15,13 @@
 int main() {
     // --- --- --- STARTUP SEQUENCE --- --- ---
     #ifdef __linux__
-    if (gpioInitialise() < 0) {
+    int gpio_result = gpioInitialise();
+    std::cout << "GPIO init result: " << gpio_result << std::endl;
+    if (gpio_result < 0) {
         std::cout << "Failed to initialise pigpio!" << std::endl;
         return 1;
     }
-    #endif
+#endif
 
     #ifdef __linux__
     gpioSetMode(LED_PIN, PI_OUTPUT);  // set pin as output
@@ -35,7 +37,7 @@ int main() {
     bool run = true;
 
     // --- --- --- PROGRAM LOOP --- --- ---
-    #ifdef __linix__
+    #ifdef __linux__
     while (run) {
         gpioWrite(LED_PIN, 1);  // pin ON
         std::this_thread::sleep_for(std::chrono::seconds(1));
