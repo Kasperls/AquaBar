@@ -84,25 +84,21 @@ int main() {
     while (run) {
         // --- --- --- HARDWARE INTERFACE --- --- ---
         if (gpioRead(RESET_PIN) && !reset_pressed) {
-            std::cout << "Reset pressed!" << std::endl;
             std::cout << "Value reset! " << std::endl;
             value = 0;
             reset_pressed = true;
         }
         if (!gpioRead(RESET_PIN) && reset_pressed) {
-            std::cout << "Reset reset!" << std::endl;
             reset_pressed = false;
 
         }
 
         if (gpioRead(INPUT_PIN) && !input_pressed) {
             value += 35;
-            std::cout << "Button pressed!" << std::endl;
             std::cout << "Value at: " << value << std::endl;
             input_pressed = true;
         }
         if (!gpioRead(INPUT_PIN) && input_pressed) {
-            std::cout << "Button reset!" << std::endl;
             input_pressed = false;
 
         }
@@ -124,6 +120,10 @@ int main() {
                 }
 
                 std::cout << "Card scanned! RFID was: " << rfid_data << std::endl;
+
+                user_manager.getUser(rfid_data).addSpending(value);
+                user_manager.saveData();
+                value = 0;
 
                 cl_command = ClCommand::NONE;
                 break;
