@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <chrono>
+#include <string>
 
 #define WINDOW_W 800
 #define WINDOW_H 480
