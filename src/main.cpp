@@ -39,6 +39,7 @@ int main() {
     while (run) {
         if (gpioRead(INPUT_PIN)) {
             value += 35;
+            std::cout << "Button pressed!" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(800));
 
             // pressed = true;
