@@ -1,5 +1,5 @@
-#include "UserManager.h"
-#include "User.h"
+#include "userManager.h"
+#include "user.h"
 
 #include <iostream>
 #include <string>
