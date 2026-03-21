@@ -34,6 +34,9 @@ void inputThread(
             cl_command = ClCommand::QUIT;
             run = false;
         }
+        if (input == "p") {
+            cl_command = ClCommand::PRINT;
+        }
         if (input.size() == 10) {
             {
                 std::lock_guard<std::mutex> lock(cl_data_mutex);
@@ -110,6 +113,10 @@ int main() {
             case ClCommand::QUIT:
                 run = false;
                 cl_command = ClCommand::NONE;
+                break;
+            
+            case ClCommand::PRINT:
+                user_manager.printUsers();
                 break;
             
             case ClCommand::RFID_SCANNED:

@@ -3,5 +3,6 @@
 enum class ClCommand {
     NONE,
     QUIT,
+    PRINT,
     RFID_SCANNED,
 };
