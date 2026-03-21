@@ -10,43 +10,50 @@
     #include <pigpio.h>
 #endif
 
-#define LED_PIN 18  // change this to whatever pin you use
+#define INPUT_PIN 18  // change this to whatever pin you use
 
+#ifdef __linux__
 int main() {
     // --- --- --- STARTUP SEQUENCE --- --- ---
-    #ifdef __linux__
     int gpio_result = gpioInitialise();
     std::cout << "GPIO init result: " << gpio_result << std::endl;
     if (gpio_result < 0) {
         std::cout << "Failed to initialise pigpio!" << std::endl;
         return 1;
     }
-#endif
 
-    #ifdef __linux__
-    gpioSetMode(LED_PIN, PI_OUTPUT);  // set pin as output
-    #endif
+    gpioSetMode(INPUT_PIN, PI_INPUT);  // set pin as output
 
-    #ifdef __linux__
     std::cout << "Running on RP" << std::endl;
-    #endif
 
     UserManager user_manager = UserManager{"../res/test_data.csv"};
     user_manager.printUsers();
 
     bool run = true;
 
+    int value = 0;
+    // bool pressed = false;
+
     // --- --- --- PROGRAM LOOP --- --- ---
-    #ifdef __linux__
     while (run) {
-        gpioWrite(LED_PIN, 1);  // pin ON
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        gpioWrite(LED_PIN, 0);  // pin OFF
-        std::this_thread::sleep_for(std::chrono::seconds(1));              // wait 1 second
+        if (gpioRead(PIN_NUMBER)) {
+            value += 35;
+            std::this_thread::sleep_for(std::chrono::seconds(0.8));
+
+            // pressed = true;
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(0.05));
     }
     
     gpioTerminate();  // cleanup pigpio on exit
-    #endif
 
     return 0;
 }
+#endif
+
+#ifndef __linux__
+int main() {
+    UserManager user_manager = UserManager{"../res/test_data.csv"};
+    user_manager.printUsers();
+}
+#endif
