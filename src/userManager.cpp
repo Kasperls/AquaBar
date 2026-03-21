@@ -53,7 +53,7 @@ const std::vector<User>& UserManager::getUsers() const {
 
 void UserManager::printUsers() {
     for (User& user : user_vector) {
-        std::cout << user.getName() << std::endl;
+        std::cout << user.getName() << " : " << user.getSpending() << std::endl;
     };
 }
 
