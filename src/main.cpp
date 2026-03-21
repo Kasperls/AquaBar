@@ -57,7 +57,6 @@ void inputThread(
     }
 }
 
-#ifdef __linux__
 
 int main() {
     // --- --- --- STARTUP SEQUENCE --- --- ---
@@ -180,6 +179,7 @@ int main() {
     gui.detach();
     return 0;
 }
+#ifdef __linux__
 
 #endif
 

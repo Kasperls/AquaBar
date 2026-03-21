@@ -6,6 +6,7 @@ set(SOURCES
     src/main.cpp
     src/user.cpp
     src/userManager.cpp
+    src/gui.cpp
 )
 
 add_executable(RFIDBar ${SOURCES})
