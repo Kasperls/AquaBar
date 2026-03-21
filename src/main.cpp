@@ -40,26 +40,25 @@ int main() {
     // --- --- --- PROGRAM LOOP --- --- ---
     while (run) {
         if (gpioRead(RESET_PIN) && !reset_pressed) {
-            value += 35;
-            std::cout << "Button pressed!" << std::endl;
-            std::cout << "Value at: " << value << std::endl;
+            std::cout << "Reset pressed!" << std::endl;
+            std::cout << "Value reset! " << std::endl;
+            value = 0;
             reset_pressed = true;
         }
         if (!gpioRead(RESET_PIN) && reset_pressed) {
-            std::cout << "Button reset!" << std::endl;
+            std::cout << "Reset reset!" << std::endl;
             reset_pressed = false;
 
         }
 
         if (gpioRead(INPUT_PIN) && !input_pressed) {
             value += 35;
-            std::cout << "Reset pressed!" << std::endl;
-            std::cout << "Value reset! " << std::endl;
-            value = 0;
+            std::cout << "Button pressed!" << std::endl;
+            std::cout << "Value at: " << value << std::endl;
             input_pressed = true;
         }
         if (!gpioRead(INPUT_PIN) && input_pressed) {
-            std::cout << "Reset reset!" << std::endl;
+            std::cout << "Button reset!" << std::endl;
             input_pressed = false;
 
         }
