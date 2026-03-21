@@ -117,6 +117,7 @@ int main() {
             
             case ClCommand::PRINT:
                 user_manager.printUsers();
+                cl_command = ClCommand::NONE;
                 break;
             
             case ClCommand::RFID_SCANNED:
