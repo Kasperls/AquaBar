@@ -1,6 +1,7 @@
 #include "userManager.h"
 #include "user.h"
 #include "command.h"
+#include "gui.h"
 
 #include <iostream>
 #include <string>
@@ -28,41 +29,6 @@ void print_gui(const std::string& str) {
     std::cout << str << std::endl;
 }
 
-void guiThread(std::atomic<bool>& run) {
-    SDL_Init(SDL_INIT_VIDEO);
-    
-    SDL_Window* window = SDL_CreateWindow(
-        "BarAqua",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        800, 480,
-        SDL_WINDOW_SHOWN
-    );
-    
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
-
-    // GUI LOOP
-    SDL_Event event;
-    while (run) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) run = false;
-        }
-
-        // clear screen
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
-        // draw a rectangle
-        SDL_Rect rect = {100, 100, 200, 50};
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        SDL_RenderFillRect(renderer, &rect);
-
-        SDL_RenderPresent(renderer);
-    }
-
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-}
 
 void inputThread(
     std::atomic<bool>& run, 
@@ -116,6 +82,7 @@ int main() {
 
     std::atomic<bool> run = true;
     std::atomic<ClCommand> cl_command = ClCommand::NONE;
+    std::atomic<GuiCommand> gui_command = GuiCommand::NONE;
     std::string cl_data;
     std::mutex cl_data_mutex;
 
@@ -130,7 +97,8 @@ int main() {
 
     std::thread gui(
         guiThread,
-        std::ref(run)
+        std::ref(run),
+        std::ref(gui_command)
     );
 
     while (run) {
@@ -183,8 +151,10 @@ int main() {
 
                     if (value == 0) {
                         print_gui("You have currently spent: " + std::to_string(selected_user.getSpending()));
+                        gui_command = GuiCommand::DRAW_SPENDING;
                     } else {
                         print_gui("Charged: " + std::to_string(value));
+                        gui_command = GuiCommand::DRAW_CHECKOUT;
                     }
 
                     selected_user.addSpending(value);
