@@ -9,6 +9,10 @@
 #include <atomic>
 #include <mutex>
 
+#ifdef __linux__
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#endif
 
 #ifdef __linux__
     #include <pigpio.h>
@@ -22,6 +26,42 @@ std::atomic<ClCommand> cl_command = ClCommand{0};
 
 void print_gui(const std::string& str) {
     std::cout << str << std::endl;
+}
+
+void guiThread(std::atomic<bool>& run) {
+    SDL_Init(SDL_INIT_VIDEO);
+    
+    SDL_Window* window = SDL_CreateWindow(
+        "BarAqua",
+        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        800, 480,
+        SDL_WINDOW_SHOWN
+    );
+    
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
+
+    // GUI LOOP
+    SDL_Event event;
+    while (run) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) run = false;
+        }
+
+        // clear screen
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        // draw a rectangle
+        SDL_Rect rect = {100, 100, 200, 50};
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+        SDL_RenderFillRect(renderer, &rect);
+
+        SDL_RenderPresent(renderer);
+    }
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }
 
 void inputThread(
@@ -88,10 +128,15 @@ int main() {
         std::ref(cl_data)
     );
 
+    std::thread gui(
+        guiThread,
+        std::ref(run)
+    );
+
     while (run) {
         // --- --- --- HARDWARE INTERFACE --- --- ---
         if (gpioRead(RESET_PIN) && !reset_pressed) {
-            print_gui("Value reset!");
+            print_gui("Value at: 0");
             value = 0;
             reset_pressed = true;
         }
