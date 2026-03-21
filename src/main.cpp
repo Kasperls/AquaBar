@@ -13,6 +13,7 @@
 #define INPUT_PIN 18  // change this to whatever pin you use
 
 #ifdef __linux__
+
 int main() {
     // --- --- --- STARTUP SEQUENCE --- --- ---
     int gpio_result = gpioInitialise();
@@ -36,19 +37,20 @@ int main() {
 
     // --- --- --- PROGRAM LOOP --- --- ---
     while (run) {
-        if (gpioRead(PIN_NUMBER)) {
+        if (gpioRead(INPUT_PIN)) {
             value += 35;
-            std::this_thread::sleep_for(std::chrono::seconds(0.8));
+            std::this_thread::sleep_for(std::chrono::milliseconds(800));
 
             // pressed = true;
         }
-        std::this_thread::sleep_for(std::chrono::seconds(0.05));
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
     
     gpioTerminate();  // cleanup pigpio on exit
 
     return 0;
 }
+
 #endif
 
 #ifndef __linux__
