@@ -43,11 +43,11 @@ int main() {
             value += 35;
             std::cout << "Button pressed!" << std::endl;
             std::cout << "Value at: " << value << std::endl;
-            pressed = true;
+            reset_pressed = true;
         }
         if (!gpioRead(RESET_PIN) && reset_pressed) {
             std::cout << "Button reset!" << std::endl;
-            pressed = false;
+            reset_pressed = false;
 
         }
 
@@ -56,11 +56,11 @@ int main() {
             std::cout << "Reset pressed!" << std::endl;
             std::cout << "Value reset! " << std::endl;
             value = 0;
-            pressed = true;
+            input_pressed = true;
         }
         if (!gpioRead(INPUT_PIN) && input_pressed) {
             std::cout << "Reset reset!" << std::endl;
-            pressed = false;
+            input_pressed = false;
 
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
