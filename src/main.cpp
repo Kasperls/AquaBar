@@ -40,11 +40,13 @@ int main() {
         if (gpioRead(INPUT_PIN) && !pressed) {
             value += 35;
             std::cout << "Button pressed!" << std::endl;
+            std::cout << "Value at: " << value << std::endl;
             pressed = true;
         }
         if (!gpioRead(INPUT_PIN) && pressed) {
             std::cout << "Button reset!" << std::endl;
             pressed = false;
+
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
