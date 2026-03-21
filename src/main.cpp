@@ -20,6 +20,10 @@
 std::atomic<ClCommand> cl_command = ClCommand{0};
 
 
+void print_gui(const std::string& str) {
+    std::cout << str << std::endl;
+}
+
 void inputThread(
     std::atomic<bool>& run, 
     std::atomic<ClCommand>& cl_command,
@@ -87,7 +91,7 @@ int main() {
     while (run) {
         // --- --- --- HARDWARE INTERFACE --- --- ---
         if (gpioRead(RESET_PIN) && !reset_pressed) {
-            std::cout << "Value reset! " << std::endl;
+            print_gui("Value reset!");
             value = 0;
             reset_pressed = true;
         }
@@ -98,7 +102,7 @@ int main() {
 
         if (gpioRead(INPUT_PIN) && !input_pressed) {
             value += 35;
-            std::cout << "Value at: " << value << std::endl;
+            print_gui("Value at: " + std::to_string(value));
             input_pressed = true;
         }
         if (!gpioRead(INPUT_PIN) && input_pressed) {
@@ -127,8 +131,12 @@ int main() {
                     rfid_data = cl_data;
                 }
 
-                std::cout << "Card scanned! RFID was: " << rfid_data << std::endl;
+                print_gui("Card scanned! RFID was: " + rfid_data);
 
+                if (value == 0) {
+                    print_gui("You have currently spent: " + std::to_string(user_manager.getUser(rfid_data).getSpending()));
+                }
+                
                 user_manager.getUser(rfid_data).addSpending(value);
                 user_manager.saveData();
                 value = 0;
