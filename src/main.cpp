@@ -131,13 +131,15 @@ int main() {
                     rfid_data = cl_data;
                 }
 
-                print_gui("Card scanned! RFID was: " + rfid_data);
+                // print_gui("Card scanned! RFID was: " + rfid_data);
 
                 try {
                     User& selected_user = user_manager.getUser(rfid_data);
 
                     if (value == 0) {
                         print_gui("You have currently spent: " + std::to_string(selected_user.getSpending()));
+                    } else {
+                        print_gui("Charged: " + std::to_string(value));
                     }
 
                     selected_user.addSpending(value);
