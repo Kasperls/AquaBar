@@ -128,7 +128,7 @@ void guiThread(std::atomic<bool>& run, std::atomic<GuiCommand>& gui_command) {
         }
 
         SDL_RenderPresent(renderer);
-        SDL_Delay(22h);  // ~60fps
+        SDL_Delay(22);  // ~60fps
     }
 
     // --- CLEANUP ---
