@@ -88,7 +88,7 @@ int main() {
 
     // SDL2 gui thread variables
     std::atomic<GuiCommand> gui_command = GuiCommand::NONE;
-    std::string gui_data = "test string";
+    std::string gui_data = "Welcome!";
     std::mutex gui_data_mutex;
 
     // --- --- --- PROGRAM LOOP --- --- ---
@@ -109,6 +109,14 @@ int main() {
     );
 
     while (run) {
+        {   
+            std::lock_guard<std::mutex> lock (gui_data_mutex);
+            if (gui_data == "RESET") {
+                std::string value_string = "Value at: " + std::to_string(value);
+                gui_data = value_string;
+            }
+        }
+
         // --- --- --- HARDWARE INTERFACE --- --- ---
         if (gpioRead(RESET_PIN) && !reset_pressed) {
             std::string value_string = "Value at: 0";
