@@ -55,7 +55,7 @@ void inputThread(
     std::string& cl_data
 ) {
     
-    int fd = open("/dev/input/event0", O_RDONLY);  // change to your device
+    int fd = open("/dev/input/event2", O_RDONLY);  // change to your device
     if (fd < 0) {
         std::cout << "Failed to open input device!" << std::endl;
         return;
