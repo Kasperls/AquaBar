@@ -44,8 +44,9 @@ void guiThread(
         "BarAqua",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         WINDOW_W, WINDOW_H,
-        SDL_WINDOW_SHOWN
+        SDL_WINDOW_FULLSCREEN_DESKTOP
     );
+    
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
