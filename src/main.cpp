@@ -62,7 +62,7 @@ void inputThread(
             case KEY_9: return "9";
             default: return "";
         }
-    }
+    };
 
     std::string buffer = "";
     struct input_event ev;
