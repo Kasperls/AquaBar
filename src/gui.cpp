@@ -147,7 +147,7 @@ void guiThread(
         }
 
         SDL_RenderPresent(renderer);
-        SDL_Delay(22);  // ~60fps
+        SDL_Delay(22);
     }
 
     // --- CLEANUP ---

@@ -88,7 +88,7 @@ int main() {
 
     // SDL2 gui thread variables
     std::atomic<GuiCommand> gui_command = GuiCommand::NONE;
-    std::string gui_data;
+    std::string gui_data = "test string";
     std::mutex gui_data_mutex;
 
     // --- --- --- PROGRAM LOOP --- --- ---
