@@ -44,6 +44,8 @@ void inputThread(
     if (fd < 0) {
         std::cout << "Failed to open input device!" << std::endl;
         return;
+    } else {
+        std::cout << "Opened the input device!" << std::endl;
     }
 
     std::string buffer = "";
@@ -53,6 +55,8 @@ void inputThread(
         read(fd, &ev, sizeof(ev));
         
         if (ev.type == EV_KEY && ev.value == 1) {  // key press event
+            std::cout << "Event registered" << std::endl;
+
             if (ev.code == KEY_ENTER) {
                 if (buffer.size() == 10) {
                     {
