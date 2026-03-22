@@ -7,8 +7,8 @@
 
 // GUI text drawing boilerplate written by claude.ai
 
-#define WINDOW_W 800
-#define WINDOW_H 480
+#define WINDOW_W 1920
+#define WINDOW_H 1080
 #define FONT_PATH "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 
 // Helper to render text centered at a y position
