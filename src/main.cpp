@@ -155,6 +155,7 @@ int main() {
 
     // SDL2 gui thread variables
     std::atomic<GuiCommand> gui_command = GuiCommand::NONE;
+    // ADD GUIBIG AND GUISMALL VARIABLES TO MAKE THE GUI MORE PRETTY
     std::string gui_data = "Velkommen!";
     std::mutex gui_data_mutex;
 
