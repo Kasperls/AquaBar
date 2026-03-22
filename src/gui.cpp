@@ -143,8 +143,8 @@ void guiThread(
 
             case GuiCommand::DRAW_UNKOWN: {
                 drawBackground(renderer, red);
-                drawTextCentered(renderer, font_medium, "Unknown card!", 150, white);
-                drawTextCentered(renderer, font_small, "Please register first", 260, white);
+                drawTextCentered(renderer, font_medium, "Ukjent kort!", 150, white);
+                drawTextCentered(renderer, font_small, "Venligst kontakt Kasper :p", 260, white);
                 break;
             }
 
