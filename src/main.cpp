@@ -13,6 +13,9 @@
 #ifdef __linux__
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <linux/input.h>
+#include <unistd.h>
+#include <fcntl.h>
 #endif
 
 #ifdef __linux__
@@ -32,30 +35,71 @@ void print_gui(const std::string& str) {
 
 void inputThread(
     std::atomic<bool>& run, 
-    std::atomic<ClCommand>& cl_command,
+    std::atomic<ClCommand>& cl_command, 
     std::mutex& cl_data_mutex,
     std::string& cl_data
 ) {
-    std::string input;
+    
+    int fd = open("/dev/input/event0", O_RDONLY);  // change to your device
+    if (fd < 0) {
+        std::cout << "Failed to open input device!" << std::endl;
+        return;
+    }
+
+    std::string buffer = "";
+    struct input_event ev;
+
     while (run) {
-        std::getline(std::cin, input);
-        // std::cout << input << std::endl;
-        if (input == "q") {
-            cl_command = ClCommand::QUIT;
-            run = false;
-        }
-        if (input == "p") {
-            cl_command = ClCommand::PRINT;
-        }
-        if (input.size() == 10) {
-            {
-                std::lock_guard<std::mutex> lock(cl_data_mutex);
-                cl_data = input;
+        read(fd, &ev, sizeof(ev));
+        
+        if (ev.type == EV_KEY && ev.value == 1) {  // key press event
+            if (ev.code == KEY_ENTER) {
+                if (buffer.size() == 10) {
+                    {
+                        std::lock_guard<std::mutex> lock(cl_data_mutex);
+                        cl_data = buffer;
+                    }
+                    cl_command = ClCommand::RFID_SCANNED;
+                }
+                buffer = "";
+            } else {
+                // convert keycode to character
+                if (ev.code >= KEY_0 && ev.code <= KEY_9) {
+                    buffer += ('0' + (ev.code - KEY_0));
+                }
             }
-            cl_command = ClCommand::RFID_SCANNED;
         }
     }
+    close(fd);
 }
+
+
+// void inputThread(
+//     std::atomic<bool>& run, 
+//     std::atomic<ClCommand>& cl_command,
+//     std::mutex& cl_data_mutex,
+//     std::string& cl_data
+// ) {
+//     std::string input;
+//     while (run) {
+//         std::getline(std::cin, input);
+//         // std::cout << input << std::endl;
+//         if (input == "q") {
+//             cl_command = ClCommand::QUIT;
+//             run = false;
+//         }
+//         if (input == "p") {
+//             cl_command = ClCommand::PRINT;
+//         }
+//         if (input.size() == 10) {
+//             {
+//                 std::lock_guard<std::mutex> lock(cl_data_mutex);
+//                 cl_data = input;
+//             }
+//             cl_command = ClCommand::RFID_SCANNED;
+//         }
+//     }
+// }
 
 
 int main() {
@@ -112,7 +156,7 @@ int main() {
         {   
             std::lock_guard<std::mutex> lock (gui_data_mutex);
             if (gui_data == "-----") {
-                std::string value_string = "Sum: 0" + std::to_string(value);
+                std::string value_string = "Sum: " + std::to_string(value);
                 gui_data = value_string;
             }
         }
