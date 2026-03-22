@@ -259,8 +259,8 @@ int main() {
                             std::cout << line << std::endl;
                             data_csv_string += line + "\n";
                         }
-                        
-                        std::string command = "python3 /home/piaqua/Desktop/AquaBar/python/mail_automation.py \"bar code test\" \"" + data_csv_string + "\" kaspel@samfundet.no";
+                        // SPLIT BACKUP AND MAILING CODE!
+                        std::string command = "python3 /home/piaqua/Desktop/AquaBar/python/mail_automation.py \"Aqua Bar system test\" \"" + data_csv_string + "\" danahk@samfundet.no";
                         system(command.c_str()); 
                         user_manager.saveData(true);
                         

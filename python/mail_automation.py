@@ -17,7 +17,9 @@ def send_email(subject, body, to_address):
     from_address = "kasperls004@gmail.com"
     password = "fzlp cfoa btyp nzrk"
 
-    msg = MIMEText(body)
+    mail_body = "Dette er en automatisk mail sendt fra Aqua Bar:\n\n" + body + "\n\nVennlig hilsen,\nAqua Bar Systemet"
+
+    msg = MIMEText(mail_body)
     msg["Subject"] = subject
     msg["From"] = from_address
     msg["To"] = to_address
