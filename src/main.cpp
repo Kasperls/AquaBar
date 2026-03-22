@@ -55,7 +55,7 @@ void inputThread(
     std::string& cl_data
 ) {
     
-    int fd = open("/dev/input/event2", O_RDONLY);  // change to your device
+    int fd = open("/dev/input/by-id/usb-IC_Reader_IC_Reader_08FF20171101-event-kbd", O_RDONLY);  // change to your device
     if (fd < 0) {
         std::cout << "Failed to open input device!" << std::endl;
         return;
@@ -115,6 +115,10 @@ void inputThread(
 //         }
 //     }
 // }
+
+void init_csv() {
+
+};
 
 
 int main() {
@@ -237,7 +241,9 @@ int main() {
                 try {
                     User& selected_user = user_manager.getUser(rfid_data);
 
-                    if (value == 0) {
+                    if (selected_user.getName() == "Reset") {
+                        gui_command = GuiCommand::DRAW_END;
+                    } else if (value == 0) {
                         std::string user_spending_string = "I dag har du brukt: " + std::to_string(selected_user.getSpending());
                         print_gui(user_spending_string);
                         // First lock the mutex, then send gui draw command

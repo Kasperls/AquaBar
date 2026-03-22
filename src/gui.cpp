@@ -60,6 +60,7 @@ void guiThread(
     SDL_Color red    = {200, 50,  50,  255};
     SDL_Color blue   = {50,  100, 200, 255};
     SDL_Color orange = {220, 140, 0,   255};
+    SDL_Color yellow = {50,  200, 200, 255};
 
     GuiCommand active_command = GuiCommand::DRAW_VALUE;
     auto command_time = std::chrono::steady_clock::now();
@@ -149,6 +150,13 @@ void guiThread(
                 break;
             }
 
+            case GuiCommand::DRAW_END: {
+                drawBackground(renderer, yellow);
+                drawTextCentered(renderer, font_medium, "Data lagret!", 150, white);
+                drawTextCentered(renderer, font_small, "Kriteliste sendt til barsjef", 260, white);
+                break;
+            }
+
             default: break;
         }
 
@@ -164,4 +172,3 @@ void guiThread(
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-}
