@@ -80,10 +80,16 @@ int main() {
     bool reset_pressed = false;
 
     std::atomic<bool> run = true;
+
+    // command line thread variables
     std::atomic<ClCommand> cl_command = ClCommand::NONE;
-    std::atomic<GuiCommand> gui_command = GuiCommand::NONE;
     std::string cl_data;
     std::mutex cl_data_mutex;
+
+    // SDL2 gui thread variables
+    std::atomic<GuiCommand> gui_command = GuiCommand::NONE;
+    std::string gui_data;
+    std::mutex gui_data_mutex;
 
     // --- --- --- PROGRAM LOOP --- --- ---
     std::thread input(
@@ -97,13 +103,21 @@ int main() {
     std::thread gui(
         guiThread,
         std::ref(run),
-        std::ref(gui_command)
+        std::ref(gui_command),
+        std::ref(gui_data_mutex),
+        std::ref(gui_data)
     );
 
     while (run) {
         // --- --- --- HARDWARE INTERFACE --- --- ---
         if (gpioRead(RESET_PIN) && !reset_pressed) {
             print_gui("Value at: 0");
+            {
+                std::lock_guard<std::mutex> lock(gui_data_mutex);
+                gui_data = "Value at: 0";
+            }
+            gui_command = GuiCommand::DRAW_VALUE;
+
             value = 0;
             reset_pressed = true;
         }
@@ -114,7 +128,14 @@ int main() {
 
         if (gpioRead(INPUT_PIN) && !input_pressed) {
             value += 35;
-            print_gui("Value at: " + std::to_string(value));
+            std::string value_string = "Value at: " + std::to_string(value);
+            print_gui(value_string);
+            {
+                std::lock_guard<std::mutex> lock(gui_data_mutex);
+                gui_data = value_string;
+            }
+            gui_command = GuiCommand::DRAW_VALUE;
+
             input_pressed = true;
         }
         if (!gpioRead(INPUT_PIN) && input_pressed) {
@@ -149,10 +170,22 @@ int main() {
                     User& selected_user = user_manager.getUser(rfid_data);
 
                     if (value == 0) {
-                        print_gui("You have currently spent: " + std::to_string(selected_user.getSpending()));
+                        std::string user_spending_string = "You have currently spent: " + std::to_string(selected_user.getSpending());
+                        print_gui(user_spending_string);
+                        // First lock the mutex, then send gui draw command
+                        {
+                            std::lock_guard<std::mutex> lock(gui_data_mutex);
+                            gui_data = user_spending_string;
+                        }
                         gui_command = GuiCommand::DRAW_SPENDING;
                     } else {
-                        print_gui("Charged: " + std::to_string(value));
+                        std::string value_string = "Charged: " + std::to_string(value);
+                        print_gui(value_string);
+                        // First lock the mutex, then send gui draw command
+                        {
+                            std::lock_guard<std::mutex> lock(gui_data_mutex);
+                            gui_data = value_string;
+                        }
                         gui_command = GuiCommand::DRAW_CHECKOUT;
                     }
 

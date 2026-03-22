@@ -3,6 +3,9 @@
 #include <SDL2/SDL_ttf.h>
 #include <chrono>
 #include <string>
+#include <mutex>
+
+// GUI text drawing boilerplate written by claude.ai
 
 #define WINDOW_W 800
 #define WINDOW_H 480
@@ -27,7 +30,12 @@ static void drawBackground(SDL_Renderer* renderer, SDL_Color color) {
     SDL_RenderClear(renderer);
 }
 
-void guiThread(std::atomic<bool>& run, std::atomic<GuiCommand>& gui_command) {
+void guiThread(
+    std::atomic<bool>& run, 
+    std::atomic<GuiCommand>& gui_command
+    std::mutex& gui_data_mutex,
+    std::string& gui_data,
+) {
     // --- INIT ---
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
@@ -86,37 +94,47 @@ void guiThread(std::atomic<bool>& run, std::atomic<GuiCommand>& gui_command) {
 
             case GuiCommand::DRAW_VALUE: {
                 drawBackground(renderer, black);
-                drawTextCentered(renderer, font_small, "Total spending", 100, white);
+                std::string data;
+                {
+                    std::guard_lock<std::mutex> lock(gui_data_mutex);
+                    data = gui_data;
+                }
+                drawTextCentered(renderer, font_medium, data, 100, white);
+                // drawTextCentered(renderer, font_small, "Total spending", 100, white);
                 // TODO: replace with actual value from user data
-                drawTextCentered(renderer, font_large, "0 kr", 180, white);
+                // drawTextCentered(renderer, font_large, "0 kr", 180, white);
                 break;
             }
 
             case GuiCommand::DRAW_SPENDING: {
                 drawBackground(renderer, green);
-                drawTextCentered(renderer, font_medium, "Welcome!", 100, white);
+                std::string data;
+                {
+                    std::guard_lock<std::mutex> lock(gui_data_mutex);
+                    data = gui_data;
+                }
+                drawTextCentered(renderer, font_medium, data, 100, white);
+                // drawTextCentered(renderer, font_medium, "Welcome!", 100, white);
                 // TODO: replace with actual user name
-                drawTextCentered(renderer, font_large, "Name", 180, white);
-                drawTextCentered(renderer, font_small, "Balance: 0 kr", 300, white);
+                // drawTextCentered(renderer, font_large, "Name", 180, white);
+                // drawTextCentered(renderer, font_small, "Balance: 0 kr", 300, white);
                 break;
             }
 
             case GuiCommand::DRAW_CHECKOUT: {
                 drawBackground(renderer, blue);
-                drawTextCentered(renderer, font_medium, "Checking out", 100, white);
+                std::string data;
+                {
+                    std::guard_lock<std::mutex> lock(gui_data_mutex);
+                    data = gui_data;
+                }
+                drawTextCentered(renderer, font_medium, data, 100, white);
+                // drawTextCentered(renderer, font_medium, "Checking out", 100, white);
                 // TODO: replace with actual user name and spending
-                drawTextCentered(renderer, font_large, "Name", 180, white);
-                drawTextCentered(renderer, font_small, "Total: 0 kr", 300, white);
+                // drawTextCentered(renderer, font_large, "Name", 180, white);
+                // drawTextCentered(renderer, font_small, "Total: 0 kr", 300, white);
                 break;
             }
-
-            // case GuiCommand::DRAW_VALUE: {
-            //     drawBackground(renderer, orange);
-            //     drawTextCentered(renderer, font_medium, "Adding...", 100, white);
-            //     // TODO: replace with actual value
-            //     drawTextCentered(renderer, font_large, "+0 kr", 180, white);
-            //     break;
-            // }
 
             case GuiCommand::DRAW_UNKOWN: {
                 drawBackground(renderer, red);
