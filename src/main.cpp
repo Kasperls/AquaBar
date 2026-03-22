@@ -246,23 +246,25 @@ int main() {
                     User& selected_user = user_manager.getUser(rfid_data);
 
                     if (selected_user.getName() == "Reset") {
-                        gui_command = GuiCommand::DRAW_END;
-
+                        
                         std::ifstream data_csv(user_manager.getPath());
                         std::string line;
                         std::string data_csv_string;
-
+                        
                         if (!data_csv.is_open()) {
                             std::cout << "Failed to open csv file!" << std::endl;
                         }
-
+                        
                         while (std::getline(data_csv, line)) {
                             std::cout << line << std::endl;
                             data_csv_string += line + "\n";
                         }
-
+                        
                         std::string command = "python3 /home/piaqua/Desktop/AquaBar/python/mail_automation.py \"bar code test\" \"" + data_csv_string + "\" kaspel@samfundet.no";
-                        system(command.c_str());    
+                        system(command.c_str()); 
+                        user_manager.saveData(true);
+                        
+                        gui_command = GuiCommand::DRAW_END;
 
                     } else if (value == 0) {
                         std::string user_spending_string = "I dag har du brukt: " + std::to_string(selected_user.getSpending());
