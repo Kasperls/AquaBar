@@ -32,6 +32,21 @@ void print_gui(const std::string& str) {
     std::cout << str << std::endl;
 }
 
+std::string keycodeToChar(int code) {
+        switch (code) {
+            case KEY_0: return "0";
+            case KEY_1: return "1";
+            case KEY_2: return "2";
+            case KEY_3: return "3";
+            case KEY_4: return "4";
+            case KEY_5: return "5";
+            case KEY_6: return "6";
+            case KEY_7: return "7";
+            case KEY_8: return "8";
+            case KEY_9: return "9";
+            default: return "";
+        }
+};
 
 void inputThread(
     std::atomic<bool>& run, 
@@ -47,22 +62,6 @@ void inputThread(
     } else {
         std::cout << "Opened the input device!" << std::endl;
     }
-
-    std::string keycodeToChar(int code) {
-        switch (code) {
-            case KEY_0: return "0";
-            case KEY_1: return "1";
-            case KEY_2: return "2";
-            case KEY_3: return "3";
-            case KEY_4: return "4";
-            case KEY_5: return "5";
-            case KEY_6: return "6";
-            case KEY_7: return "7";
-            case KEY_8: return "8";
-            case KEY_9: return "9";
-            default: return "";
-        }
-    };
 
     std::string buffer = "";
     struct input_event ev;
