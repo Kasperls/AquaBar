@@ -256,7 +256,7 @@ int main() {
                             data_csv_string += line;
                         }
 
-                        std::string command = "python3 python/send_mail.py \"bar code test\" \"" + data_csv_string + "\" kaspel@samfundet.no";
+                        std::string command = "python3 ../python/send_mail.py \"bar code test\" \"" + data_csv_string + "\" kaspel@samfundet.no";
                         system(command.c_str());
 
                     } else if (value == 0) {
