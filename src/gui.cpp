@@ -90,7 +90,7 @@ void guiThread(
             std::string reset_str_value = "RESET";
             {
                 std::lock_guard<std::mutex> lock(gui_data_mutex);
-                gui = reset_str_value;
+                gui_data = reset_str_value;
             }
         }
 
