@@ -260,7 +260,7 @@ int main() {
                             data_csv_string += line + "\n";
                         }
                         // SPLIT BACKUP AND MAILING CODE!
-                        std::string command = "python3 /home/piaqua/Desktop/AquaBar/python/mail_automation.py \"Aqua Bar system test\" \"" + data_csv_string + "\" danahk@samfundet.no";
+                        std::string command = "python3 /home/piaqua/Desktop/AquaBar/python/mail_automation.py \"Aqua Bar system test\" \"" + data_csv_string + "\" kaspel@samfundet.no";
                         system(command.c_str()); 
                         user_manager.saveData(true);
                         
