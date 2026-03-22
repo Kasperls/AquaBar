@@ -1,5 +1,7 @@
 #pragma once
 #include <atomic>
+#include <mutex>
+#include <string>
 
 enum class GuiCommand {
     NONE,
@@ -10,4 +12,11 @@ enum class GuiCommand {
     DRAW_UNKOWN,     // Unknown RFID scanned
 };
 
-void guiThread(std::atomic<bool>& run, std::atomic<GuiCommand>& gui_command);
+// void guiThread(std::atomic<bool>& run, std::atomic<GuiCommand>& gui_command);
+
+void guiThread(
+    std::atomic<bool>& run, 
+    std::atomic<GuiCommand>& gui_command,
+    std::mutex& gui_data_mutex,
+    std::string& gui_data
+);
