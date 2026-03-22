@@ -87,7 +87,7 @@ void guiThread(
         if (active_command != GuiCommand::DRAW_VALUE &&
             std::chrono::duration_cast<std::chrono::seconds>(elapsed).count() >= 2) {
             active_command = GuiCommand::DRAW_VALUE;
-            std::string reset_str_value = "RESET";
+            std::string reset_str_value = "-----";
             {
                 std::lock_guard<std::mutex> lock(gui_data_mutex);
                 gui_data = reset_str_value;

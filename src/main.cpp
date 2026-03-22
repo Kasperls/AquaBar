@@ -88,7 +88,7 @@ int main() {
 
     // SDL2 gui thread variables
     std::atomic<GuiCommand> gui_command = GuiCommand::NONE;
-    std::string gui_data = "Welcome!";
+    std::string gui_data = "Velkommen!";
     std::mutex gui_data_mutex;
 
     // --- --- --- PROGRAM LOOP --- --- ---
@@ -111,15 +111,15 @@ int main() {
     while (run) {
         {   
             std::lock_guard<std::mutex> lock (gui_data_mutex);
-            if (gui_data == "RESET") {
-                std::string value_string = "Value at: " + std::to_string(value);
+            if (gui_data == "-----") {
+                std::string value_string = "Sum: 0" + std::to_string(value);
                 gui_data = value_string;
             }
         }
 
         // --- --- --- HARDWARE INTERFACE --- --- ---
         if (gpioRead(RESET_PIN) && !reset_pressed) {
-            std::string value_string = "Value at: 0";
+            std::string value_string = "Sum: 0";
             print_gui(value_string);
             {
                 std::lock_guard<std::mutex> lock(gui_data_mutex);
@@ -137,7 +137,7 @@ int main() {
 
         if (gpioRead(INPUT_PIN) && !input_pressed) {
             value += 35;
-            std::string value_string = "Value at: " + std::to_string(value);
+            std::string value_string = "Sum: " + std::to_string(value);
             print_gui(value_string);
             {
                 std::lock_guard<std::mutex> lock(gui_data_mutex);
@@ -179,7 +179,7 @@ int main() {
                     User& selected_user = user_manager.getUser(rfid_data);
 
                     if (value == 0) {
-                        std::string user_spending_string = "You have currently spent: " + std::to_string(selected_user.getSpending());
+                        std::string user_spending_string = "I dag har du brukt: " + std::to_string(selected_user.getSpending());
                         print_gui(user_spending_string);
                         // First lock the mutex, then send gui draw command
                         {
@@ -188,7 +188,7 @@ int main() {
                         }
                         gui_command = GuiCommand::DRAW_SPENDING;
                     } else {
-                        std::string value_string = "Charged: " + std::to_string(value);
+                        std::string value_string = "Du krysset: " + std::to_string(value);
                         print_gui(value_string);
                         // First lock the mutex, then send gui draw command
                         {
@@ -203,6 +203,7 @@ int main() {
 
                 } catch (std::runtime_error& e) {
                     std::cout << e.what() << std::endl;
+                    gui_command = GuiCommand::DRAW_UNKOWN;
                 }
                 
                 
