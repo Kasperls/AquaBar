@@ -32,9 +32,9 @@ static void drawBackground(SDL_Renderer* renderer, SDL_Color color) {
 
 void guiThread(
     std::atomic<bool>& run, 
-    std::atomic<GuiCommand>& gui_command
+    std::atomic<GuiCommand>& gui_command,
     std::mutex& gui_data_mutex,
-    std::string& gui_data,
+    std::string& gui_data
 ) {
     // --- INIT ---
     SDL_Init(SDL_INIT_VIDEO);
