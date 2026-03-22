@@ -25,7 +25,7 @@ class UserManager
 
         void saveData();
 
-        const std::string& UserManager::getPath() const;
+        const std::string& getPath() const;
 
         // void writeUserData(unsigned int index);
 };
