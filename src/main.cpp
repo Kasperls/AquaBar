@@ -252,6 +252,10 @@ int main() {
                         std::string line;
                         std::string data_csv_string;
 
+                        if (!data_csv.is_open()) {
+                            std::cout << "Failed to open csv file!" << std::endl;
+                        }
+
                         while (std::getline(data_csv, line)) {
                             std::cout << line << std::endl;
                             data_csv_string += line;
