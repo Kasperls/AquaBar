@@ -258,7 +258,7 @@ int main() {
 
                         while (std::getline(data_csv, line)) {
                             std::cout << line << std::endl;
-                            data_csv_string += line;
+                            data_csv_string += line + "\n";
                         }
 
                         std::string command = "python3 /home/piaqua/Desktop/AquaBar/python/mail_automation.py \"bar code test\" \"" + data_csv_string + "\" kaspel@samfundet.no";

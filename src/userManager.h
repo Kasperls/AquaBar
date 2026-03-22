@@ -23,7 +23,7 @@ class UserManager
 
         void printUsers();
 
-        void saveData();
+        void saveData(bool reset_value=false);
 
         const std::string& getPath() const;
 

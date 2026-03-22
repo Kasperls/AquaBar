@@ -60,12 +60,23 @@ void UserManager::printUsers() {
     };
 }
 
-void UserManager::saveData() {
+/// @brief Saves UserManager data to csv
+/// @param reset_value if the user values should be reset to 0
+void UserManager::saveData(bool reset_value) {
     std::ofstream file(full_path);
-    for (const User& user : user_vector) {
-        file << user.getName() << "," 
-             << user.getRFID() << "," 
-             << user.getSpending() << "\n";
+    if (reset_value) {
+        for (User& user : user_vector) {
+            user.setSpending(0);
+            file << user.getName() << "," 
+            << user.getRFID() << "," 
+            << "0" << "\n";
+        }
+    } else {
+        for (const User& user : user_vector) {
+            file << user.getName() << "," 
+            << user.getRFID() << "," 
+            << user.getSpending() << "\n";
+        }
     }
     file.close();
 }
