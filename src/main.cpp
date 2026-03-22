@@ -48,16 +48,31 @@ void inputThread(
         std::cout << "Opened the input device!" << std::endl;
     }
 
+    std::string keycodeToChar(int code) {
+        switch (code) {
+            case KEY_0: return "0";
+            case KEY_1: return "1";
+            case KEY_2: return "2";
+            case KEY_3: return "3";
+            case KEY_4: return "4";
+            case KEY_5: return "5";
+            case KEY_6: return "6";
+            case KEY_7: return "7";
+            case KEY_8: return "8";
+            case KEY_9: return "9";
+            default: return "";
+        }
+    }
+
     std::string buffer = "";
     struct input_event ev;
 
     while (run) {
         read(fd, &ev, sizeof(ev));
         
-        if (ev.type == EV_KEY && ev.value == 1) {  // key press event
-            std::cout << "Event registered" << std::endl;
-
+        if (ev.type == EV_KEY && ev.value == 1) {
             if (ev.code == KEY_ENTER) {
+                std::cout << "Buffer: " << buffer << " size: " << buffer.size() << std::endl;
                 if (buffer.size() == 10) {
                     {
                         std::lock_guard<std::mutex> lock(cl_data_mutex);
@@ -67,10 +82,7 @@ void inputThread(
                 }
                 buffer = "";
             } else {
-                // convert keycode to character
-                if (ev.code >= KEY_0 && ev.code <= KEY_9) {
-                    buffer += ('0' + (ev.code - KEY_0));
-                }
+                buffer += keycodeToChar(ev.code);
             }
         }
     }
