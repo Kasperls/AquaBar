@@ -1,5 +1,6 @@
 #include "userManager.h"
 #include <iostream>
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 
@@ -41,6 +42,8 @@ UserManager::UserManager(const std::string& path_to_data) {
         });
 
     }
+    full_path = std::filesystem::absolute(path_to_data).string();
+
 }
 
 std::vector<User>& UserManager::getUsers() {
@@ -58,7 +61,7 @@ void UserManager::printUsers() {
 }
 
 void UserManager::saveData() {
-    std::ofstream file(path_to_data);
+    std::ofstream file(full_path);
     for (const User& user : user_vector) {
         file << user.getName() << "," 
              << user.getRFID() << "," 
@@ -78,7 +81,7 @@ User& UserManager::getUser(const std::string& rfid) {
 }
 
 const std::string& UserManager::getPath() const {
-    return path_to_data;
+    return full_path;
 }
 
 // void UserManager::writeUserData(unsigned int index) {

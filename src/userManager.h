@@ -10,7 +10,7 @@ class UserManager
 {
     private:
         std::vector<User> user_vector;
-        std::string path_to_data;
+        std::string full_path;
     
     
     public:
