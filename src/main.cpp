@@ -253,11 +253,12 @@ int main() {
                         std::string data_csv_string;
 
                         while (std::getline(data_csv, line)) {
+                            std::cout << line << std::endl;
                             data_csv_string += line;
                         }
 
                         std::string command = "python3 /home/piaqua/Desktop/AquaBar/python/mail_automation.py \"bar code test\" \"" + data_csv_string + "\" kaspel@samfundet.no";
-                        system(command.c_str());
+                        system(command.c_str());    
 
                     } else if (value == 0) {
                         std::string user_spending_string = "I dag har du brukt: " + std::to_string(selected_user.getSpending());
