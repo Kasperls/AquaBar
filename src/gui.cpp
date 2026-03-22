@@ -5,7 +5,7 @@
 #include <string>
 #include <mutex>
 
-// GUI text drawing boilerplate written by claude.ai
+// !!! GUI boilerplate written by claude.ai !!!
 
 #define WINDOW_W 1920
 #define WINDOW_H 1080

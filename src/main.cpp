@@ -36,6 +36,7 @@ void print_gui(const std::string& str) {
     std::cout << str << std::endl;
 }
 
+// !!! function written by claude.ai !!!
 std::string keycodeToChar(int code) {
         switch (code) {
             case KEY_0: return "0";
@@ -70,6 +71,7 @@ void inputThread(
     std::string buffer = "";
     struct input_event ev;
 
+    // !!! loop written by claude.ai !!!
     while (run) {
         read(fd, &ev, sizeof(ev));
         
@@ -91,39 +93,6 @@ void inputThread(
     }
     close(fd);
 }
-
-
-// void inputThread(
-//     std::atomic<bool>& run, 
-//     std::atomic<ClCommand>& cl_command,
-//     std::mutex& cl_data_mutex,
-//     std::string& cl_data
-// ) {
-//     std::string input;
-//     while (run) {
-//         std::getline(std::cin, input);
-//         // std::cout << input << std::endl;
-//         if (input == "q") {
-//             cl_command = ClCommand::QUIT;
-//             run = false;
-//         }
-//         if (input == "p") {
-//             cl_command = ClCommand::PRINT;
-//         }
-//         if (input.size() == 10) {
-//             {
-//                 std::lock_guard<std::mutex> lock(cl_data_mutex);
-//                 cl_data = input;
-//             }
-//             cl_command = ClCommand::RFID_SCANNED;
-//         }
-//     }
-// }
-
-void init_csv() {
-
-};
-
 
 int main() {
     // --- --- --- STARTUP SEQUENCE --- --- ---
