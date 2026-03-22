@@ -60,7 +60,7 @@ void guiThread(
     SDL_Color red    = {200, 50,  50,  255};
     SDL_Color blue   = {50,  100, 200, 255};
     SDL_Color orange = {220, 140, 0,   255};
-    SDL_Color yellow = {50,  200, 200, 255};
+    SDL_Color yellow = {250, 240, 60,  255};
 
     GuiCommand active_command = GuiCommand::DRAW_VALUE;
     auto command_time = std::chrono::steady_clock::now();

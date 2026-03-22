@@ -77,6 +77,10 @@ User& UserManager::getUser(const std::string& rfid) {
     throw std::runtime_error("User not found: " + rfid);
 }
 
+const std::string& UserManager::getPath() const {
+    return path_to_data;
+}
+
 // void UserManager::writeUserData(unsigned int index) {
 
 // }

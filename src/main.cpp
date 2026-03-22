@@ -3,12 +3,16 @@
 #include "command.h"
 #include "gui.h"
 
-#include <iostream>
 #include <string>
 #include <thread>
 #include <chrono>
 #include <atomic>
 #include <mutex>
+
+#include <fstream>
+#include <iostream>
+#include <sstream>
+
 
 #ifdef __linux__
 #include <SDL2/SDL.h>
@@ -243,6 +247,18 @@ int main() {
 
                     if (selected_user.getName() == "Reset") {
                         gui_command = GuiCommand::DRAW_END;
+
+                        std::ifstream data_csv(user_manager.getPath());
+                        std::string line;
+                        std::string data_csv_string;
+
+                        while (std::getline(data_csv, line)) {
+                            data_csv_string += line;
+                        }
+
+                        std::string command = "python3 python/send_mail.py \"bar code test\" \"" + data_csv_string + "\" kaspel@samfundet.no";
+                        system(command.c_str());
+
                     } else if (value == 0) {
                         std::string user_spending_string = "I dag har du brukt: " + std::to_string(selected_user.getSpending());
                         print_gui(user_spending_string);
