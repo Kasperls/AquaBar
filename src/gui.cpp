@@ -110,13 +110,13 @@ void guiThread(std::atomic<bool>& run, std::atomic<GuiCommand>& gui_command) {
                 break;
             }
 
-            case GuiCommand::DRAW_VALUE: {
-                drawBackground(renderer, orange);
-                drawTextCentered(renderer, font_medium, "Adding...", 100, white);
-                // TODO: replace with actual value
-                drawTextCentered(renderer, font_large, "+0 kr", 180, white);
-                break;
-            }
+            // case GuiCommand::DRAW_VALUE: {
+            //     drawBackground(renderer, orange);
+            //     drawTextCentered(renderer, font_medium, "Adding...", 100, white);
+            //     // TODO: replace with actual value
+            //     drawTextCentered(renderer, font_large, "+0 kr", 180, white);
+            //     break;
+            // }
 
             case GuiCommand::DRAW_UNKOWN: {
                 drawBackground(renderer, red);
