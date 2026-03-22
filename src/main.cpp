@@ -111,10 +111,11 @@ int main() {
     while (run) {
         // --- --- --- HARDWARE INTERFACE --- --- ---
         if (gpioRead(RESET_PIN) && !reset_pressed) {
-            print_gui("Value at: 0");
+            std::string value_string = "Value at: 0";
+            print_gui(value_string);
             {
                 std::lock_guard<std::mutex> lock(gui_data_mutex);
-                gui_data = "Value at: 0";
+                gui_data = value_string;
             }
             gui_command = GuiCommand::DRAW_VALUE;
 
