@@ -1,7 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 import sys
-from time import time
+import time
 import os
 
 def save_backup(body):
