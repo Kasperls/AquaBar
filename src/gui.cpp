@@ -96,7 +96,7 @@ void guiThread(
                 drawBackground(renderer, black);
                 std::string data;
                 {
-                    std::guard_lock<std::mutex> lock(gui_data_mutex);
+                    std::lock_guard<std::mutex> lock(gui_data_mutex);
                     data = gui_data;
                 }
                 drawTextCentered(renderer, font_medium, data, 100, white);
@@ -110,7 +110,7 @@ void guiThread(
                 drawBackground(renderer, green);
                 std::string data;
                 {
-                    std::guard_lock<std::mutex> lock(gui_data_mutex);
+                    std::lock_guard<std::mutex> lock(gui_data_mutex);
                     data = gui_data;
                 }
                 drawTextCentered(renderer, font_medium, data, 100, white);
@@ -125,7 +125,7 @@ void guiThread(
                 drawBackground(renderer, blue);
                 std::string data;
                 {
-                    std::guard_lock<std::mutex> lock(gui_data_mutex);
+                    std::lock_guard<std::mutex> lock(gui_data_mutex);
                     data = gui_data;
                 }
                 drawTextCentered(renderer, font_medium, data, 100, white);
