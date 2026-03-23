@@ -230,7 +230,7 @@ int main() {
                             data_csv_string += line + "\n";
                         }
 
-                        std::string backup_command = "python3 /home/piaqua/Desktop/AquaBar/python/backup_file.py" + data_csv_string;
+                        std::string backup_command = "python3 /home/piaqua/Desktop/AquaBar/python/backup_file.py " + data_csv_string;
                         std::string mail_command = "python3 /home/piaqua/Desktop/AquaBar/python/mail_automation.py \"Aqua Bar system test\" \"" + data_csv_string + "\" kaspel@samfundet.no";
                         system(mail_command.c_str()); 
                         system(backup_command.c_str()); 
