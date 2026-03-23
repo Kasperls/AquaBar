@@ -230,13 +230,13 @@ int main() {
                             data_csv_string += line + "\n";
                         }
 
+                        gui_command = GuiCommand::DRAW_END;
                         std::string backup_command = "python3 /home/piaqua/Desktop/AquaBar/python/backup_file.py \"" + data_csv_string + "\"";
                         std::string mail_command = "python3 /home/piaqua/Desktop/AquaBar/python/mail_automation.py \"Aqua Bar system test\" \"" + data_csv_string + "\" kaspel@samfundet.no";
                         system(mail_command.c_str()); 
                         system(backup_command.c_str()); 
                         user_manager.saveData(true);
                         
-                        gui_command = GuiCommand::DRAW_END;
 
                     } else if (value == 0) {
                         std::string user_spending_string = "I dag har du brukt: " + std::to_string(selected_user.getSpending());
