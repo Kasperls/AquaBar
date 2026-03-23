@@ -107,7 +107,7 @@ int main() {
 
     std::cout << "Running on RP" << std::endl;
 
-    UserManager user_manager = UserManager{"../res/test_data.csv"};
+    UserManager user_manager = UserManager{"../res/data.csv"};
     user_manager.printUsers();
 
 
@@ -229,7 +229,7 @@ int main() {
                             std::cout << line << std::endl;
                             data_csv_string += line + "\n";
                         }
-                        
+
                         std::string backup_command = "python3 /home/piaqua/Desktop/AquaBar/python/mail_automation.py" + data_csv_string;
                         std::string mail_command = "python3 /home/piaqua/Desktop/AquaBar/python/mail_automation.py \"Aqua Bar system test\" \"" + data_csv_string + "\" kaspel@samfundet.no";
                         system(mail_command.c_str()); 
