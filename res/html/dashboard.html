@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tracker Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --border: #dddbd4;
+    --border-strong: #b8b5ac;
+    --text: #1a1917;
+    --text-muted: #6b6860;
+    --text-faint: #a09d97;
+    --accent: #1a1917;
+    --danger: #b83232;
+    --danger-bg: #fdf1f1;
+    --danger-border: #f0c0c0;
+    --blocked-bg: #fff8f0;
+    --blocked-border: #f0d8b8;
+    --blocked-text: #8a5a1a;
+    --green: #1e6b3c;
+  }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  .header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-left h1 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .header-left p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+  }
+
+  .pill.live::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+  }
+
+  .stat-card .label {
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+
+  .stat-card .value {
+    font-size: 26px;
+    font-weight: 300;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: -0.03em;
+  }
+
+  .stat-card .value.danger { color: var(--danger); }
+
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .table-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .table-toolbar > span {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .toggle-label input[type="checkbox"] {
+    width: 13px;
+    height: 13px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    font-weight: 400;
+    padding: 10px 1.25rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  thead th:last-child { text-align: center; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--bg); }
+  tbody tr.is-blocked { background: var(--blocked-bg); }
+
+  td {
+    padding: 11px 1.25rem;
+    font-size: 13.5px;
+    vertical-align: middle;
+  }
+
+  .user-name {
+    font-weight: 500;
+    font-size: 13.5px;
+  }
+
+  /* RFID shown as subtle subtext, hidden by default */
+  .rfid-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-top: 3px;
+    display: none;
+  }
+
+  /* Toggle class on the table reveals all RFID lines at once */
+  table.show-rfid .rfid-sub { display: block; }
+
+  .spent-cell {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+
+  .blocked-cell { text-align: center; }
+
+  .blocked-cell input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--danger);
+    cursor: pointer;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: 8px;
+    background: var(--blocked-bg);
+    border: 1px solid var(--blocked-border);
+    color: var(--blocked-text);
+    vertical-align: middle;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+  }
+
+  .btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 18px;
+    border-radius: 6px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.1s, border-color 0.1s;
+  }
+
+  .btn:hover { background: var(--bg); border-color: var(--accent); }
+
+  .btn-danger {
+    background: var(--danger-bg);
+    border-color: var(--danger-border);
+    color: var(--danger);
+  }
+
+  .btn-danger:hover { background: #f9e5e5; border-color: var(--danger); }
+
+  .confirm-bar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-border);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--danger);
+  }
+
+  .confirm-bar.visible { display: flex; }
+  .confirm-bar strong { font-weight: 500; }
+
+  .confirm-bar button {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--danger);
+    cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 500;
+  }
+
+  .confirm-bar .btn-confirm { background: var(--danger); color: white; }
+  .confirm-bar .btn-cancel { background: transparent; color: var(--danger); }
+
+  .footer {
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-faint);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>tracker / dashboard</h1>
+    <p>Week 12 — Last sync: 2025-03-24 08:41</p>
+  </div>
+  <div class="header-right">
+    <span class="pill live">pi online</span>
+    <span class="pill">open wifi</span>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat-card">
+    <div class="label">Total users</div>
+    <div class="value">10</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Total spent</div>
+    <div class="value">2 840</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Blocked</div>
+    <div class="value danger">2</div>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-toolbar">
+    <span>users — week_12_data.csv</span>
+    <div class="toolbar-right">
+      <label class="toggle-label">
+        <input type="checkbox" id="show-rfid-toggle" onchange="toggleRfid(this)">
+        show rfid
+      </label>
+      <a href="/download" style="font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--text-muted); text-decoration:none;">&#x2193; download csv</a>
+    </div>
+  </div>
+  <table id="main-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Spent</th>
+        <th>Blocked</th>
+      </tr>
+    </thead>
+    <tbody id="user-table">
+      <!-- In Flask: {% for user in users %} <tr>...</tr> {% endfor %} -->
+    </tbody>
+  </table>
+</div>
+
+<div class="actions">
+  <button class="btn btn-danger" onclick="showConfirm()">Reset all data</button>
+  <div class="confirm-bar" id="confirm-bar">
+    <strong>Are you sure?</strong> This will wipe all weekly data.
+    <button class="btn-confirm" onclick="submitReset()">Yes, reset</button>
+    <button class="btn-cancel" onclick="hideConfirm()">Cancel</button>
+  </div>
+  <button class="btn" onclick="saveBlocked()">Save changes</button>
+</div>
+
+<div class="footer">
+  <span>raspberry pi 3b+ — institution tracker v1.0</span>
+  <span id="save-status"></span>
+</div>
+
+<script>
+  /*
+    Mock data — in real Flask this table is rendered server-side via Jinja2.
+    CSV columns: name, rfid, spent, blocked
+  */
+  const users = [
+    { rfid: "A3F2910C", name: "Anna Berg",    spent: 340, blocked: false },
+    { rfid: "B7E4023D", name: "Erik Dahl",    spent: 500, blocked: true  },
+    { rfid: "C1D5834E", name: "Maja Holm",    spent: 120, blocked: false },
+    { rfid: "D9C6745F", name: "Lars Strand",  spent: 490, blocked: true  },
+    { rfid: "E2B7856A", name: "Sofie Lie",    spent: 210, blocked: false },
+    { rfid: "F4A8967B", name: "Jonas Viken",  spent: 85,  blocked: false },
+    { rfid: "0593A78C", name: "Ingrid Bakke", spent: 305, blocked: false },
+    { rfid: "1682B89D", name: "Nils Haug",    spent: 450, blocked: false },
+    { rfid: "2771C90E", name: "Kari Moen",    spent: 60,  blocked: false },
+    { rfid: "3860D01F", name: "Per Lund",     spent: 280, blocked: false },
+  ];
+
+  function buildTable() {
+    const tbody = document.getElementById("user-table");
+    tbody.innerHTML = "";
+    users.forEach(u => {
+      const tr = document.createElement("tr");
+      if (u.blocked) tr.classList.add("is-blocked");
+      tr.innerHTML =
+        "<td>" +
+          "<div class='user-name'>" + u.name + (u.blocked ? "<span class='badge'>blocked</span>" : "") + "</div>" +
+          "<div class='rfid-sub'>" + u.rfid + "</div>" +
+        "</td>" +
+        "<td class='spent-cell'>" + u.spent + "</td>" +
+        "<td class='blocked-cell'>" +
+          "<input type='checkbox' data-id='" + u.rfid + "' " + (u.blocked ? "checked" : "") + " onchange='onBlockedChange(this)'>" +
+        "</td>";
+      tbody.appendChild(tr);
+    });
+  }
+
+  buildTable();
+
+  /* Toggling one class on the table shows/hides all RFID lines */
+  function toggleRfid(checkbox) {
+    document.getElementById("main-table").classList.toggle("show-rfid", checkbox.checked);
+  }
+
+  function onBlockedChange(checkbox) {
+    const row = checkbox.closest("tr");
+    row.classList.toggle("is-blocked", checkbox.checked);
+    setStatus("Staged: " + checkbox.dataset.id + " \u2192 " + (checkbox.checked ? "blocked" : "unblocked"));
+    /*
+      fetch("/set-blocked", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rfid: checkbox.dataset.id, blocked: checkbox.checked })
+      });
+    */
+  }
+
+  function saveBlocked() {
+    const checkboxes = document.querySelectorAll("#user-table input[type=checkbox]");
+    const payload = Array.from(checkboxes).map(cb => ({ rfid: cb.dataset.id, blocked: cb.checked }));
+    /*
+      fetch("/save-blocked", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(() => setStatus("Saved"));
+    */
+    setStatus("Changes saved");
+  }
+
+  function showConfirm() {
+    document.getElementById("confirm-bar").classList.add("visible");
+  }
+
+  function hideConfirm() {
+    document.getElementById("confirm-bar").classList.remove("visible");
+  }
+
+  function submitReset() {
+    /*
+      fetch("/reset", { method: "POST" }).then(() => location.reload());
+    */
+    hideConfirm();
+    setStatus("Data reset — reload to confirm");
+  }
+
+  function setStatus(msg) {
+    const el = document.getElementById("save-status");
+    el.textContent = msg;
+    setTimeout(function() { el.textContent = ""; }, 4000);
+  }
+</script>
+
+</body>
+</html>

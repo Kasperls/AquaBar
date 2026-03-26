@@ -1,0 +1,14 @@
+"filename", "language", "C++", "Markdown", "CMake", "Python", "comment", "blank", "total"
+"c:\Users\kaspe\cpp\aqua_bar\CMakeLists.txt", "CMake", 0, 0, 14, 0, 0, 3, 17
+"c:\Users\kaspe\cpp\aqua_bar\README.md", "Markdown", 0, 4, 0, 0, 0, 2, 6
+"c:\Users\kaspe\cpp\aqua_bar\python\backup_file.py", "Python", 0, 0, 0, 11, 1, 2, 14
+"c:\Users\kaspe\cpp\aqua_bar\python\mail_automation.py", "Python", 0, 0, 0, 20, 1, 8, 29
+"c:\Users\kaspe\cpp\aqua_bar\src\command.h", "C++", 7, 0, 0, 0, 0, 1, 8
+"c:\Users\kaspe\cpp\aqua_bar\src\gui.cpp", "C++", 129, 0, 0, 0, 21, 25, 175
+"c:\Users\kaspe\cpp\aqua_bar\src\gui.h", "C++", 19, 0, 0, 0, 1, 4, 24
+"c:\Users\kaspe\cpp\aqua_bar\src\main.cpp", "C++", 227, 0, 0, 0, 12, 56, 295
+"c:\Users\kaspe\cpp\aqua_bar\src\user.cpp", "C++", 21, 0, 0, 0, 0, 6, 27
+"c:\Users\kaspe\cpp\aqua_bar\src\user.h", "C++", 17, 0, 0, 0, 1, 5, 23
+"c:\Users\kaspe\cpp\aqua_bar\src\userManager.cpp", "C++", 76, 0, 0, 0, 5, 19, 100
+"c:\Users\kaspe\cpp\aqua_bar\src\userManager.h", "C++", 17, 0, 0, 0, 4, 10, 31
+"Total", "-", 513, 4, 14, 31, 46, 141, 749
