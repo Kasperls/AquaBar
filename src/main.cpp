@@ -106,13 +106,13 @@ int main() {
     }
 
     gpioSetMode(PIN_VALUE_35, PI_INPUT);  // set pin as output
-    gpioSetPullUpDown(PIN_VALUE_35, PI_PUD_DOWN);
+    gpioSetPullUpDown(PIN_VALUE_35, PI_PUD_UP);
     gpioSetMode(PIN_VALUE_20, PI_INPUT);
-    gpioSetPullUpDown(PIN_VALUE_20, PI_PUD_DOWN);
+    gpioSetPullUpDown(PIN_VALUE_20, PI_PUD_UP);
     gpioSetMode(PIN_VALUE_05, PI_INPUT);
-    gpioSetPullUpDown(PIN_VALUE_05, PI_PUD_DOWN);
+    gpioSetPullUpDown(PIN_VALUE_05, PI_PUD_UP);
     gpioSetMode(RESET_PIN, PI_INPUT);
-    gpioSetPullUpDown(RESET_PIN, PI_PUD_DOWN);
+    gpioSetPullUpDown(RESET_PIN, PI_PUD_UP);
     
 
     std::cout << "Running on RP" << std::endl;
@@ -168,7 +168,7 @@ int main() {
 
         // --- --- --- HARDWARE INTERFACE --- --- ---
         bool pin_reset = gpioRead(RESET_PIN);
-        if (pin_reset && !reset_pressed) {
+        if (!pin_reset && !reset_pressed) {
             std::string value_string = "Sum: 0";
             print_gui(value_string);
             {
@@ -180,13 +180,13 @@ int main() {
             value = 0;
             reset_pressed = true;
         }
-        if (!pin_reset && reset_pressed) {
+        if (pin_reset && reset_pressed) {
             reset_pressed = false;
 
         }
 
         bool pin_35 = gpioRead(PIN_VALUE_35);
-        if (pin_35 && !input_35_pressed) {
+        if (!pin_35 && !input_35_pressed) {
             value += 35;
             std::string value_string = "Sum: " + std::to_string(value);
             print_gui(value_string);
@@ -198,13 +198,13 @@ int main() {
 
             input_35_pressed = true;
         }
-        if (!pin_35 && input_35_pressed) {
+        if (pin_35 && input_35_pressed) {
             input_35_pressed = false;
 
         }
 
         bool pin_20 = gpioRead(PIN_VALUE_20);
-        if (pin_20 && !input_20_pressed) {
+        if (!pin_20 && !input_20_pressed) {
             value += 20;
             std::string value_string = "Sum: " + std::to_string(value);
             print_gui(value_string);
@@ -216,12 +216,13 @@ int main() {
 
             input_20_pressed = true;
         }
-        if (!pin_20 && input_20_pressed) {
+        if (pin_20 && input_20_pressed) {
             input_20_pressed = false;
 
         }
+
         bool pin_05 = gpioRead(PIN_VALUE_05);
-        if (pin_05 && !input_05_pressed) {
+        if (!pin_05 && !input_05_pressed) {
             value += 5;
             std::string value_string = "Sum: " + std::to_string(value);
             print_gui(value_string);
@@ -233,7 +234,7 @@ int main() {
 
             input_05_pressed = true;
         }
-        if (!pin_05 && input_05_pressed) {
+        if (pin_05 && input_05_pressed) {
             input_05_pressed = false;
 
         }
