@@ -28,7 +28,7 @@
 
 #define PIN_VALUE_35 26
 #define PIN_VALUE_20 13
-#define PIN_VALUE_05 6
+#define PIN_VALUE_05 6  
 #define RESET_PIN 19 
 
 std::atomic<ClCommand> cl_command = ClCommand{0};
@@ -159,7 +159,8 @@ int main() {
         }
 
         // --- --- --- HARDWARE INTERFACE --- --- ---
-        if (gpioRead(RESET_PIN) && !reset_pressed) {
+        bool pin_reset = gpioRead(RESET_PIN);
+        if (pin_reset && !reset_pressed) {
             std::string value_string = "Sum: 0";
             print_gui(value_string);
             {
@@ -171,12 +172,13 @@ int main() {
             value = 0;
             reset_pressed = true;
         }
-        if (!gpioRead(RESET_PIN) && reset_pressed) {
+        if (!pin_reset && reset_pressed) {
             reset_pressed = false;
 
         }
 
-        if (gpioRead(PIN_VALUE_35) && !input_35_pressed) {
+        bool pin_35 = gpioRead(PIN_VALUE_35);
+        if (pin_35 && !input_35_pressed) {
             value += 35;
             std::string value_string = "Sum: " + std::to_string(value);
             print_gui(value_string);
@@ -188,12 +190,13 @@ int main() {
 
             input_35_pressed = true;
         }
-        if (!gpioRead(PIN_VALUE_35) && input_35_pressed) {
+        if (!pin_35 && input_35_pressed) {
             input_35_pressed = false;
 
         }
 
-        if (gpioRead(PIN_VALUE_20) && !input_20_pressed) {
+        bool pin_20 = gpioRead(PIN_VALUE_20);
+        if (pin_20 && !input_20_pressed) {
             value += 20;
             std::string value_string = "Sum: " + std::to_string(value);
             print_gui(value_string);
@@ -205,12 +208,12 @@ int main() {
 
             input_20_pressed = true;
         }
-        if (!gpioRead(PIN_VALUE_20) && input_20_pressed) {
+        if (!pin_20 && input_20_pressed) {
             input_20_pressed = false;
 
         }
-
-        if (gpioRead(PIN_VALUE_05) && !input_05_pressed) {
+        bool pin_05 = gpioRead(PIN_VALUE_05);
+        if (pin_05 && !input_05_pressed) {
             value += 5;
             std::string value_string = "Sum: " + std::to_string(value);
             print_gui(value_string);
@@ -222,7 +225,7 @@ int main() {
 
             input_05_pressed = true;
         }
-        if (!gpioRead(PIN_VALUE_05) && input_05_pressed) {
+        if (!pin_05 && input_05_pressed) {
             input_05_pressed = false;
 
         }
