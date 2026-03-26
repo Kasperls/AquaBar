@@ -114,7 +114,7 @@ void guiThread(
             }
 
             case GuiCommand::DRAW_SPENDING: {
-                drawBackground(renderer, green);
+                drawBackground(renderer, blue);
                 std::string data;
                 {
                     std::lock_guard<std::mutex> lock(gui_data_mutex);
@@ -129,7 +129,7 @@ void guiThread(
             }
 
             case GuiCommand::DRAW_CHECKOUT: {
-                drawBackground(renderer, blue);
+                drawBackground(renderer, green);
                 std::string data;
                 {
                     std::lock_guard<std::mutex> lock(gui_data_mutex);
