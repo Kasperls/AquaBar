@@ -167,7 +167,7 @@ int main() {
         }
 
         // --- --- --- HARDWARE INTERFACE --- --- ---
-        bool pin_reset = !gpioRead(RESET_PIN);
+        bool pin_reset = gpioRead(RESET_PIN);
         if (pin_reset && !reset_pressed) {
             std::string value_string = "Sum: 0";
             print_gui(value_string);
@@ -185,7 +185,7 @@ int main() {
 
         }
 
-        bool pin_35 = !gpioRead(PIN_VALUE_35);
+        bool pin_35 = gpioRead(PIN_VALUE_35);
         if (pin_35 && !input_35_pressed) {
             value += 35;
             std::string value_string = "Sum: " + std::to_string(value);
@@ -203,7 +203,7 @@ int main() {
 
         }
 
-        bool pin_20 = !gpioRead(PIN_VALUE_20);
+        bool pin_20 = gpioRead(PIN_VALUE_20);
         if (pin_20 && !input_20_pressed) {
             value += 20;
             std::string value_string = "Sum: " + std::to_string(value);
@@ -220,7 +220,7 @@ int main() {
             input_20_pressed = false;
 
         }
-        bool pin_05 = !gpioRead(PIN_VALUE_05);
+        bool pin_05 = gpioRead(PIN_VALUE_05);
         if (pin_05 && !input_05_pressed) {
             value += 5;
             std::string value_string = "Sum: " + std::to_string(value);
