@@ -26,8 +26,10 @@
     #include <pigpio.h>
 #endif
 
-#define INPUT_PIN 18  // change this to whatever pin you use
-#define RESET_PIN 16  // change this to whatever pin you use
+#define PIN_VALUE_35 26
+#define PIN_VALUE_20 13
+#define PIN_VALUE_05 6  
+#define RESET_PIN 19
 
 std::atomic<ClCommand> cl_command = ClCommand{0};
 
@@ -103,7 +105,15 @@ int main() {
         return 1;
     }
 
-    gpioSetMode(INPUT_PIN, PI_INPUT);  // set pin as output
+    gpioSetMode(PIN_VALUE_35, PI_INPUT);  // set pin as output
+    gpioSetPullUpDown(PIN_VALUE_35, PI_PUD_UP);
+    gpioSetMode(PIN_VALUE_20, PI_INPUT);
+    gpioSetPullUpDown(PIN_VALUE_20, PI_PUD_UP);
+    gpioSetMode(PIN_VALUE_05, PI_INPUT);
+    gpioSetPullUpDown(PIN_VALUE_05, PI_PUD_UP);
+    gpioSetMode(RESET_PIN, PI_INPUT);
+    gpioSetPullUpDown(RESET_PIN, PI_PUD_UP);
+    
 
     std::cout << "Running on RP" << std::endl;
 
@@ -112,7 +122,9 @@ int main() {
 
 
     int value = 0;
-    bool input_pressed = false;
+    bool input_35_pressed = false;
+    bool input_20_pressed = false;
+    bool input_05_pressed = false;
     bool reset_pressed = false;
 
     std::atomic<bool> run = true;
@@ -155,7 +167,8 @@ int main() {
         }
 
         // --- --- --- HARDWARE INTERFACE --- --- ---
-        if (gpioRead(RESET_PIN) && !reset_pressed) {
+        bool pin_reset = gpioRead(RESET_PIN);
+        if (!pin_reset && !reset_pressed) {
             std::string value_string = "Sum: 0";
             print_gui(value_string);
             {
@@ -167,12 +180,13 @@ int main() {
             value = 0;
             reset_pressed = true;
         }
-        if (!gpioRead(RESET_PIN) && reset_pressed) {
+        if (pin_reset && reset_pressed) {
             reset_pressed = false;
 
         }
 
-        if (gpioRead(INPUT_PIN) && !input_pressed) {
+        bool pin_35 = gpioRead(PIN_VALUE_35);
+        if (!pin_35 && !input_35_pressed) {
             value += 35;
             std::string value_string = "Sum: " + std::to_string(value);
             print_gui(value_string);
@@ -182,10 +196,46 @@ int main() {
             }
             gui_command = GuiCommand::DRAW_VALUE;
 
-            input_pressed = true;
+            input_35_pressed = true;
         }
-        if (!gpioRead(INPUT_PIN) && input_pressed) {
-            input_pressed = false;
+        if (pin_35 && input_35_pressed) {
+            input_35_pressed = false;
+
+        }
+
+        bool pin_20 = gpioRead(PIN_VALUE_20);
+        if (!pin_20 && !input_20_pressed) {
+            value += 20;
+            std::string value_string = "Sum: " + std::to_string(value);
+            print_gui(value_string);
+            {
+                std::lock_guard<std::mutex> lock(gui_data_mutex);
+                gui_data = value_string;
+            }
+            gui_command = GuiCommand::DRAW_VALUE;
+
+            input_20_pressed = true;
+        }
+        if (pin_20 && input_20_pressed) {
+            input_20_pressed = false;
+
+        }
+
+        bool pin_05 = gpioRead(PIN_VALUE_05);
+        if (!pin_05 && !input_05_pressed) {
+            value += 5;
+            std::string value_string = "Sum: " + std::to_string(value);
+            print_gui(value_string);
+            {
+                std::lock_guard<std::mutex> lock(gui_data_mutex);
+                gui_data = value_string;
+            }
+            gui_command = GuiCommand::DRAW_VALUE;
+
+            input_05_pressed = true;
+        }
+        if (pin_05 && input_05_pressed) {
+            input_05_pressed = false;
 
         }
         // --- --- --- COMMAND LINE INTERFACE --- --- ---
