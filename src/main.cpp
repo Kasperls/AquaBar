@@ -137,7 +137,8 @@ int main() {
     // SDL2 gui thread variables
     std::atomic<GuiCommand> gui_command = GuiCommand::NONE;
     // ADD GUIBIG AND GUISMALL VARIABLES TO MAKE THE GUI MORE PRETTY
-    std::string gui_data = "Velkommen!";
+    std::string gui_data_small = "Trykk på en knapp for å velge verdi";
+    std::string gui_data_big = "Velkommen!";
     std::mutex gui_data_mutex;
 
     // --- --- --- PROGRAM LOOP --- --- ---
@@ -154,26 +155,29 @@ int main() {
         std::ref(run),
         std::ref(gui_command),
         std::ref(gui_data_mutex),
-        std::ref(gui_data)
+        std::ref(gui_data_big),
+        std::ref(gui_data_small)
     );
 
     while (run) {
         {   
             std::lock_guard<std::mutex> lock (gui_data_mutex);
-            if (gui_data == "-----") {
+            if (gui_data_big == "-----") {
                 std::string value_string = "Sum: " + std::to_string(value);
-                gui_data = value_string;
+                gui_data_big = value_string;
             }
         }
 
         // --- --- --- HARDWARE INTERFACE --- --- ---
         bool pin_reset = gpioRead(RESET_PIN);
         if (!pin_reset && !reset_pressed) {
-            std::string value_string = "Sum: 0";
-            print_gui(value_string);
+            std::string value_string_big = "Sum: 0";
+            std::string value_string_small = "Bruk knappene for å velge ønsket sum";
+            print_gui(value_string_big);
             {
                 std::lock_guard<std::mutex> lock(gui_data_mutex);
-                gui_data = value_string;
+                gui_data_big = value_string_big;
+                gui_data_small = value_string_small;
             }
             gui_command = GuiCommand::DRAW_VALUE;
 
@@ -192,7 +196,8 @@ int main() {
             print_gui(value_string);
             {
                 std::lock_guard<std::mutex> lock(gui_data_mutex);
-                gui_data = value_string;
+                gui_data_big = value_string;
+                gui_data_small = "Scan kortet ditt for å krite";
             }
             gui_command = GuiCommand::DRAW_VALUE;
 
@@ -210,7 +215,8 @@ int main() {
             print_gui(value_string);
             {
                 std::lock_guard<std::mutex> lock(gui_data_mutex);
-                gui_data = value_string;
+                gui_data_big = value_string;
+                gui_data_small = "Scan kortet ditt for å krite";
             }
             gui_command = GuiCommand::DRAW_VALUE;
 
@@ -228,7 +234,8 @@ int main() {
             print_gui(value_string);
             {
                 std::lock_guard<std::mutex> lock(gui_data_mutex);
-                gui_data = value_string;
+                gui_data_big = value_string;
+                gui_data_small = "Scan kortet ditt for å krite";
             }
             gui_command = GuiCommand::DRAW_VALUE;
 
@@ -294,7 +301,8 @@ int main() {
                         // First lock the mutex, then send gui draw command
                         {
                             std::lock_guard<std::mutex> lock(gui_data_mutex);
-                            gui_data = user_spending_string;
+                            gui_data_big = "Legg inn hvor mye du vil krite!";
+                            gui_data_small = user_spending_string;
                         }
                         gui_command = GuiCommand::DRAW_SPENDING;
                     } else {
@@ -303,7 +311,8 @@ int main() {
                         // First lock the mutex, then send gui draw command
                         {
                             std::lock_guard<std::mutex> lock(gui_data_mutex);
-                            gui_data = value_string;
+                            gui_data_big = value_string;
+                            gui_data_small = "Krysset på: " + selected_user.getName();
                         }
                         gui_command = GuiCommand::DRAW_CHECKOUT;
                     }

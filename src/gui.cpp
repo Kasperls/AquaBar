@@ -34,7 +34,8 @@ void guiThread(
     std::atomic<bool>& run, 
     std::atomic<GuiCommand>& gui_command,
     std::mutex& gui_data_mutex,
-    std::string& gui_data
+    std::string& gui_data_big,
+    std::string& gui_data_small
 ) {
     // --- INIT ---
     SDL_Init(SDL_INIT_VIDEO);
@@ -53,6 +54,7 @@ void guiThread(
     TTF_Font* font_large = TTF_OpenFont(FONT_PATH, 64);
     TTF_Font* font_medium = TTF_OpenFont(FONT_PATH, 36);
     TTF_Font* font_small = TTF_OpenFont(FONT_PATH, 24);
+    TTF_Font* font_tiny = TTF_OpenFont(FONT_PATH, 18);
 
     SDL_Color white  = {255, 255, 255, 255};
     SDL_Color black  = {0,   0,   0,   255};
@@ -92,7 +94,8 @@ void guiThread(
             std::string reset_str_value = "-----";
             {
                 std::lock_guard<std::mutex> lock(gui_data_mutex);
-                gui_data = reset_str_value;
+                gui_data_big = reset_str_value;
+                gui_data_small = reset_str_value;
             }
         }
 
@@ -100,27 +103,34 @@ void guiThread(
         switch (active_command) {
 
             case GuiCommand::DRAW_VALUE: {
+                // AFTER THE USER HAS SCANNED THEIR RFID CARD AND THE VALUE WAS 0
                 drawBackground(renderer, black);
-                std::string data;
+                std::string data_big;
+                std::string data_small;
                 {
                     std::lock_guard<std::mutex> lock(gui_data_mutex);
-                    data = gui_data;
+                    data_big = gui_data_big;
+                    data_small = gui_data_small;
                 }
-                drawTextCentered(renderer, font_medium, data, 100, white);
-                // drawTextCentered(renderer, font_small, "Total spending", 100, white);
-                // TODO: replace with actual value from user data
+                drawTextCentered(renderer, font_medium, data_big, 100, white);
+                drawTextCentered(renderer, font_tiny, data_small, 140, white);
                 // drawTextCentered(renderer, font_large, "0 kr", 180, white);
                 break;
             }
 
             case GuiCommand::DRAW_SPENDING: {
+                // AFTER THE USER HAS SCANNED THEIR RFID CARD AND THE VALUE WAS > 0
                 drawBackground(renderer, blue);
-                std::string data;
+                std::string data_big;
+                std::string data_small;
                 {
                     std::lock_guard<std::mutex> lock(gui_data_mutex);
-                    data = gui_data;
+                    data_big = gui_data_big;
+                    data_small = gui_data_small;
                 }
-                drawTextCentered(renderer, font_medium, data, 100, white);
+                drawTextCentered(renderer, font_medium, data_big, 100, white);
+                drawTextCentered(renderer, font_small, data_small, 140, white);
+
                 // drawTextCentered(renderer, font_medium, "Welcome!", 100, white);
                 // TODO: replace with actual user name
                 // drawTextCentered(renderer, font_large, "Name", 180, white);
@@ -130,12 +140,16 @@ void guiThread(
 
             case GuiCommand::DRAW_CHECKOUT: {
                 drawBackground(renderer, green);
-                std::string data;
+                std::string data_big;
+                std::string data_small;
                 {
                     std::lock_guard<std::mutex> lock(gui_data_mutex);
-                    data = gui_data;
+                    data_big = gui_data_big;
+                    data_small = gui_data_small;
                 }
-                drawTextCentered(renderer, font_medium, data, 100, white);
+                drawTextCentered(renderer, font_medium, data_big, 100, white);
+                drawTextCentered(renderer, font_small, data_small, 140, white);
+
                 // drawTextCentered(renderer, font_medium, "Checking out", 100, white);
                 // TODO: replace with actual user name and spending
                 // drawTextCentered(renderer, font_large, "Name", 180, white);
