@@ -19,5 +19,6 @@ void guiThread(
     std::atomic<bool>& run, 
     std::atomic<GuiCommand>& gui_command,
     std::mutex& gui_data_mutex,
-    std::string& gui_data
+    std::string& gui_data_big,
+    std::string& gui_data_small
 );
