@@ -165,6 +165,7 @@ int main() {
             if (gui_data_big == "-----") {
                 std::string value_string = "Sum: " + std::to_string(value);
                 gui_data_big = value_string;
+                gui_data_small = "Bruk knappene for å velge ønsket sum";
             }
         }
 

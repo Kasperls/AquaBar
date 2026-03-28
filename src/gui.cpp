@@ -113,7 +113,7 @@ void guiThread(
                     data_small = gui_data_small;
                 }
                 drawTextCentered(renderer, font_medium, data_big, 100, white);
-                drawTextCentered(renderer, font_tiny, data_small, 140, white);
+                drawTextCentered(renderer, font_tiny, data_small, 150, white);
                 // drawTextCentered(renderer, font_large, "0 kr", 180, white);
                 break;
             }
@@ -129,7 +129,7 @@ void guiThread(
                     data_small = gui_data_small;
                 }
                 drawTextCentered(renderer, font_medium, data_big, 100, white);
-                drawTextCentered(renderer, font_small, data_small, 140, white);
+                drawTextCentered(renderer, font_small, data_small, 150, white);
 
                 // drawTextCentered(renderer, font_medium, "Welcome!", 100, white);
                 // TODO: replace with actual user name
@@ -148,7 +148,7 @@ void guiThread(
                     data_small = gui_data_small;
                 }
                 drawTextCentered(renderer, font_medium, data_big, 100, white);
-                drawTextCentered(renderer, font_small, data_small, 140, white);
+                drawTextCentered(renderer, font_small, data_small, 150, white);
 
                 // drawTextCentered(renderer, font_medium, "Checking out", 100, white);
                 // TODO: replace with actual user name and spending
