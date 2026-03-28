@@ -117,7 +117,7 @@ int main() {
 
     std::cout << "Running on RP" << std::endl;
 
-    UserManager user_manager = UserManager{"../res/data.csv"};
+    UserManager user_manager = UserManager{"/home/piaqua/Desktop/AquaBar/res/data.csv"};
     user_manager.printUsers();
 
 
