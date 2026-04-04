@@ -51,6 +51,7 @@ void guiThread(
     display.init();
     sleep(1);
     display.drawString(0, 0, "hello world");
+    display.display();
     sleep(2);
     display.clear();
 

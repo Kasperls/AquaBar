@@ -22,7 +22,7 @@ void SSD1306::command(uint8_t cmd) {
     write(fd, data, 2);
 }
 
-void SSD1306::data(uint8_t value) {
+void SSD1306::data(uint8_t value) { 
     uint8_t data[2] = {0x40, value};
     write(fd, data, 2);
 }
