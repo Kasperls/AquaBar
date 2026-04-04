@@ -50,7 +50,7 @@ void guiThread(
     SSD1306 display(0x3C);
     display.init();
     // display.drawString(0, 0, "Velkommen!");
-    drawBigString(0, 0, "1");    
+    display.drawBigString(0, 0, "1");    
     display.display();
     sleep(1);
     display.clear();
