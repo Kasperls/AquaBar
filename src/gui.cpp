@@ -49,7 +49,8 @@ void guiThread(
     // SSD1306 init
     SSD1306 display(0x3C);
     display.init();
-    display.drawString(0, 0, "Velkommen!");
+    // display.drawString(0, 0, "Velkommen!");
+    display.drawBigString(0, 0, "01234");
     display.display();
     sleep(1);
     display.clear();
