@@ -132,8 +132,8 @@ void guiThread(
                 drawTextCentered(renderer, font_medium, data_big, 100, white);
                 drawTextCentered(renderer, font_tiny, data_small, 150, white);
                 display.clear();
-                display.drawString(0, 0, data_big.substring(0, 4).c_str());
-                display.drawBigString(4*6+2, 0, data_big.substring(4).c_str());
+                display.drawString(0, 0, data_big.substr(0, 4).c_str());
+                display.drawBigString(4*6+2, 0, data_big.substr(4).c_str());
                 display.display();
                 break;
             }
