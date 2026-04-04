@@ -47,15 +47,15 @@ void guiThread(
 ) {
     // --- INIT ---
     // SSD1306 init
-    std::cout << "before oled init" << std:endl; 
+    std::cout << "before oled init" << std::endl; 
     SSD1306 display(0x3C);
     display.init();
-    std::cout << "after oled init" << std:endl; 
+    std::cout << "after oled init" << std::endl; 
     sleep(300);
     display.drawString(0, 0, "hello world");
     sleep(2000);
     display.clear();
-    std::cout << "after first draw call" << std:endl; 
+    std::cout << "after first draw call" << std::endl; 
 
 
     SDL_Init(SDL_INIT_VIDEO);
