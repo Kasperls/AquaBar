@@ -69,16 +69,19 @@ void SSD1306::drawBigChar(int x, int y, char c) {
             bool pixelOn = (f[byteIndex] >> (row & 7)) & 1;
 
             if (pixelOn) {
-                drawPixel(x + col, y + row);
+                drawPixel(x + col, y + row, true);
             }
         }
     }
 }
 
-void SSD1306::drawPixel(int x, int y) {
+void SSD1306::drawPixel(int x, int y, bool color) {
     if (x < 0 || x >= 128 || y < 0 || y >= 32) return;
 
-    buffer[x + (y / 8) * 128] &= ~(1 << (y & 7));
+    if (color)
+        buffer[x + (y / 8) * 128] |=  (1 << (y & 7));  // SET pixel
+    else
+        buffer[x + (y / 8) * 128] &= ~(1 << (y & 7));  // CLEAR pixel
 }
 
 

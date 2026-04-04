@@ -8,7 +8,7 @@ public:
     void clear();
     void drawChar(int x, int y, char c);
     void drawBigChar(int x, int y, char c);
-    void drawPixel(int x, int y);
+    void drawPixel(int x, int y, bool color = true);
     void drawString(int x, int y, const char* str);
     void drawBigString(int x, int y, const char* str);
     void display();
