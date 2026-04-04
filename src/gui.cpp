@@ -49,8 +49,9 @@ void guiThread(
     // SSD1306 init
     SSD1306 display(0x3C);
     display.init();
-    // sleep(300);
+    sleep(1);
     display.drawString(0, 0, "hello world");
+    sleep(2);
     display.clear();
 
 

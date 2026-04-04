@@ -40,7 +40,6 @@ void SSD1306::init() {
 }
 
 void SSD1306::clear() {
-    std::cout << "Inside clear" << std::endl; 
     memset(buffer, 0, sizeof(buffer));
 }
 
@@ -52,7 +51,6 @@ void SSD1306::drawChar(int x, int y, char c) {
 }
 
 void SSD1306::drawString(int x, int y, const char* str) {
-    std::cout << "Inside drawString" << std::endl; 
     while (*str) {
         drawChar(x, y, *str);
         x += 6;
