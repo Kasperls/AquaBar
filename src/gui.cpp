@@ -4,12 +4,18 @@
 #include <chrono>
 #include <string>
 #include <mutex>
+#include "ssd1306.h"
+#include <unistd.h>
 
 // !!! GUI boilerplate written by claude.ai !!!
 
 #define WINDOW_W 1920
 #define WINDOW_H 1080
 #define FONT_PATH "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+
+// OLED screen gpio
+// GPIO2 - SDA
+// GPIO3 - SCL
 
 // Helper to render text centered at a y position
 static void drawTextCentered(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, int y, SDL_Color color) {
@@ -38,6 +44,15 @@ void guiThread(
     std::string& gui_data_small
 ) {
     // --- INIT ---
+    // SSD1306 init
+    SSD1306 display(0x3C);
+    display.init();
+
+    sleep(300);
+    display.drawString(0, 0, "hello world");
+    sleep(2000);
+    display.clear();
+
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
 
@@ -103,7 +118,7 @@ void guiThread(
         switch (active_command) {
 
             case GuiCommand::DRAW_VALUE: {
-                // AFTER THE USER HAS SCANNED THEIR RFID CARD AND THE VALUE WAS 0
+                // WHEN THE PROGRAM WANTS TO DRAW THE VALUE
                 drawBackground(renderer, black);
                 std::string data_big;
                 std::string data_small;
@@ -114,12 +129,13 @@ void guiThread(
                 }
                 drawTextCentered(renderer, font_medium, data_big, 100, white);
                 drawTextCentered(renderer, font_tiny, data_small, 150, white);
-                // drawTextCentered(renderer, font_large, "0 kr", 180, white);
+                display.drawString(0, 0, data_big.c_str());
+                display.display();
                 break;
             }
 
             case GuiCommand::DRAW_SPENDING: {
-                // AFTER THE USER HAS SCANNED THEIR RFID CARD AND THE VALUE WAS > 0
+                // AFTER THE USER HAS SCANNED THEIR RFID CARD AND THE VALUE WAS = 0
                 drawBackground(renderer, blue);
                 std::string data_big;
                 std::string data_small;
@@ -130,11 +146,9 @@ void guiThread(
                 }
                 drawTextCentered(renderer, font_medium, data_big, 100, white);
                 drawTextCentered(renderer, font_small, data_small, 150, white);
-
-                // drawTextCentered(renderer, font_medium, "Welcome!", 100, white);
-                // TODO: replace with actual user name
-                // drawTextCentered(renderer, font_large, "Name", 180, white);
-                // drawTextCentered(renderer, font_small, "Balance: 0 kr", 300, white);
+                display.drawString(0, 0, "Se skjerm");
+                display.display();
+                
                 break;
             }
 
@@ -149,11 +163,8 @@ void guiThread(
                 }
                 drawTextCentered(renderer, font_medium, data_big, 100, white);
                 drawTextCentered(renderer, font_small, data_small, 150, white);
-
-                // drawTextCentered(renderer, font_medium, "Checking out", 100, white);
-                // TODO: replace with actual user name and spending
-                // drawTextCentered(renderer, font_large, "Name", 180, white);
-                // drawTextCentered(renderer, font_small, "Total: 0 kr", 300, white);
+                display.drawString(0, 0, "Sum kritet");
+                display.display();
                 break;
             }
 
@@ -161,6 +172,8 @@ void guiThread(
                 drawBackground(renderer, red);
                 drawTextCentered(renderer, font_medium, "Ukjent kort!", 150, white);
                 drawTextCentered(renderer, font_small, "Venligst kontakt Kasper :p", 260, white);
+                display.drawString(0, 0, "Ukjent kort");
+                display.display();
                 break;
             }
 
