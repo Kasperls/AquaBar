@@ -49,8 +49,8 @@ void guiThread(
     // SSD1306 init
     SSD1306 display(0x3C);
     display.init();
-    // display.drawString(0, 0, "Velkommen!");
-    display.drawBigString(0, 0, "1");    
+    display.drawString(0, 0, "Velkommen!");
+    // display.drawBigString(0, 0, "1");    
     display.display();
     sleep(1);
     display.clear();
@@ -133,8 +133,9 @@ void guiThread(
                 drawTextCentered(renderer, font_medium, data_big, 100, white);
                 drawTextCentered(renderer, font_tiny, data_small, 150, white);
                 display.clear();
-                display.drawString(0, 0, data_big.substr(0, 4).c_str());
-                display.drawBigString(4*6+2, 0, data_big.substr(4).c_str());
+                display.drawString(0, 0, data_big.c_str());
+                // display.drawString(0, 0, data_big.substr(0, 4).c_str());
+                // display.drawBigString(4*6+2, 0, data_big.substr(4).c_str());
                 display.display();
                 break;
             }
@@ -170,7 +171,7 @@ void guiThread(
                 drawTextCentered(renderer, font_medium, data_big, 100, white);
                 drawTextCentered(renderer, font_small, data_small, 150, white);
                 display.clear();
-                display.drawString(0, 0, "Se skjerm");
+                display.drawString(0, 0, gui_data_big.c_str());
                 display.display();
                 break;
             }
