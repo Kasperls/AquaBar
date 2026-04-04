@@ -1,5 +1,6 @@
 #include "ssd1306.h"
 #include "font6x8.h"
+#include "font16x32.h"
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
@@ -57,10 +58,42 @@ void SSD1306::drawChar(int x, int y, char c) {
     }
 }
 
+void SSD1306::drawBigChar(int x, int y, char c) {
+
+    const uint8_t* f = font16x32[c - 32];
+
+    for (int col = 0; col < 16; col++) {      // 16 columns
+        for (int row = 0; row < 32; row++) {  // 32 rows
+
+            int byteIndex = col * 4 + (row / 8);
+            bool pixelOn = (f[byteIndex] >> (row & 7)) & 1;
+
+            if (pixelOn) {
+                drawPixel(x + col, y + row, true);
+            }
+        }
+    }
+}
+
+void SSD1306::drawPixel(int x, int y) {
+    if (x < 0 || x >= 128 || y < 0 || y >= 32) return;
+
+    buffer[x + (y / 8) * 128] &= ~(1 << (y & 7));
+}
+
+
 void SSD1306::drawString(int x, int y, const char* str) {
     while (*str) {
         drawChar(x, y, *str);
         x += 6;
+        str++;
+    }
+}
+
+void SSD1306::drawBigString(int x, int y, const char* str) {
+    while (*str) {
+        drawBigChar(x, y, *str);
+        x += 16;
         str++;
     }
 }

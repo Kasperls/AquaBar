@@ -7,6 +7,8 @@ public:
     void init();
     void clear();
     void drawChar(int x, int y, char c);
+    void drawBigChar(int x, int y, char c);
+    void drawPixel(int x, int y);
     void drawString(int x, int y, const char* str);
     void display();
 

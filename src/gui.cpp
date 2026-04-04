@@ -49,10 +49,9 @@ void guiThread(
     // SSD1306 init
     SSD1306 display(0x3C);
     display.init();
-    sleep(1);
-    display.drawString(0, 0, "hello world");
+    display.drawString(0, 0, "Velkommen!");
     display.display();
-    sleep(2);
+    sleep(1);
     display.clear();
 
 
@@ -132,7 +131,9 @@ void guiThread(
                 }
                 drawTextCentered(renderer, font_medium, data_big, 100, white);
                 drawTextCentered(renderer, font_tiny, data_small, 150, white);
-                display.drawString(0, 0, data_big.c_str());
+                display.clear();
+                display.drawString(0, 0, data_big.substring(0, 4).c_str());
+                display.drawBigString(4*6+2, 0, data_big.substring(4).c_str());
                 display.display();
                 break;
             }
@@ -149,6 +150,7 @@ void guiThread(
                 }
                 drawTextCentered(renderer, font_medium, data_big, 100, white);
                 drawTextCentered(renderer, font_small, data_small, 150, white);
+                display.clear();
                 display.drawString(0, 0, "Se skjerm");
                 display.display();
                 
@@ -166,7 +168,8 @@ void guiThread(
                 }
                 drawTextCentered(renderer, font_medium, data_big, 100, white);
                 drawTextCentered(renderer, font_small, data_small, 150, white);
-                display.drawString(0, 0, "Sum kritet");
+                display.clear();
+                display.drawString(0, 0, "Se skjerm");
                 display.display();
                 break;
             }
@@ -175,6 +178,7 @@ void guiThread(
                 drawBackground(renderer, red);
                 drawTextCentered(renderer, font_medium, "Ukjent kort!", 150, white);
                 drawTextCentered(renderer, font_small, "Venligst kontakt Kasper :p", 260, white);
+                display.clear();
                 display.drawString(0, 0, "Ukjent kort");
                 display.display();
                 break;
