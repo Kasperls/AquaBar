@@ -69,7 +69,7 @@ void SSD1306::drawBigChar(int x, int y, char c) {
             bool pixelOn = (f[byteIndex] >> (row & 7)) & 1;
 
             if (pixelOn) {
-                drawPixel(x + col, y + row, true);
+                drawPixel(x + col, y + row);
             }
         }
     }
