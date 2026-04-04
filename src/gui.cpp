@@ -172,7 +172,7 @@ void guiThread(
                 drawTextCentered(renderer, font_small, data_small, 150, white);
                 display.clear();
                 display.drawString(0, 0, gui_data_big.c_str());
-                display.drawString(0, 9, gui_data_small.c_str());
+                display.drawString(0, 9, gui_data_small.substr(13).c_str());
                 display.display();
                 break;
             }
