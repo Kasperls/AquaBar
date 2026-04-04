@@ -6,6 +6,8 @@
 #include <mutex>
 #include "ssd1306.h"
 #include <unistd.h>
+#include <iostream>
+#include <ostream>
 
 // !!! GUI boilerplate written by claude.ai !!!
 
