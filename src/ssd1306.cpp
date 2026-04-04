@@ -7,7 +7,7 @@
 
 extern const uint8_t font6x8[][6];
 
-void SSD1306::SSD1306(int address) {
+SSD1306::SSD1306(int address) {
     const char* dev = "dev/i2c-1";
     fd = open(dev, O_RDWR);
     ioctl(fd, I2C_SLAVE, address);
@@ -28,7 +28,7 @@ void SSD1306::init() {
     command(0x81); command(0x7F);
     command(0xA4);
     command(0xA6);
-    vommand(0xAF);
+    command(0xAF);
 }
 
 void SSD1306::clear() {
@@ -53,7 +53,7 @@ void SSD1306::drawString(int x, int y, const char* str) {
 void SSD1306::display() {
     command(0x21); command(0); command(127);
     command(0x22); command(0); command(3);
-    for (int i = 0 , i < sizeof(buffer); i++) {
+    for (int i = 0 ; i < sizeof(buffer); i++) {
         data(buffer[i]);
     }
 }
