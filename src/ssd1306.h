@@ -15,4 +15,4 @@ private:
     uint8_t buffer[128 * 32 / 8];
     void command(uint8_t cmd);
     void data(uint8_t value);
-};x
+};
