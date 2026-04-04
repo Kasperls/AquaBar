@@ -28,55 +28,22 @@ void SSD1306::data(uint8_t value) {
 }
 
 void SSD1306::init() {
-
-    command(0xAE); // Display OFF
-
-    command(0xD5); // Set display clock divide ratio/oscillator frequency
-    command(0x80); // Suggested default
-
-    command(0xA8); // Set multiplex ratio
-    command(0x1F); // 0x1F = 31 => (128x32 panel)
-
-    command(0xD3); // Set display offset
-    command(0x00); // No offset
-
-    command(0x40); // Set display start line to 0
-
-    command(0xAD); // Set charge pump
-    command(0x8B); // Enable charge pump (Adafruit uses 0x14 or 0x8B depending on panel)
-
-    command(0xA1); // Segment re-map (mirror horizontally if needed)
-
-    command(0xC8); // COM output scan direction (flip vertically if needed)
-
-    command(0xDA); // Set COM pins hardware configuration
-    command(0x02); // 0x02 = correct for 128x32
-
-    command(0x81); // Set contrast control
-    command(0x8F); // Contrast value (0xCF, 0x8F, or 0x7F all work)
-
-    command(0xD9); // Set pre-charge period
-    command(0xF1); // Recommended value
-
-    command(0xDB); // Set VCOMH deselect level
-    command(0x40); // Default
-
-    command(0xA4); // Entire display ON (resume RAM content)
-    command(0xA6); // Normal display (not inverted)
-
-    // Addressing setup
-    command(0x20); // Set Memory Addressing Mode
-    command(0x00); // Horizontal addressing mode
-
-    command(0x21); // Set column address
-    command(0x00); // Column start
-    command(0x7F); // Column end (127)
-
-    command(0x22); // Set page address
-    command(0x00); // Page start
-    command(0x03); // Page end (0-3 for 128x32)
-
-    command(0xAF); // Display ON
+    command(0xAE);
+    command(0xD5); command(0x80);
+    command(0xA8); command(0x1F);
+    command(0xD3); command(0x00);
+    command(0x40);
+    command(0x8D); command(0x14);
+    command(0xA1);
+    command(0xC8);
+    command(0xDA); command(0x02);
+    command(0x81); command(0x8F);
+    command(0xD9); command(0xF1);
+    command(0xDB); command(0x40);
+    command(0xA4);
+    command(0xA6);
+    command(0x20); command(0x00);
+    command(0xAF);
 }
 
 void SSD1306::clear() {
