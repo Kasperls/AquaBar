@@ -11,7 +11,7 @@
 extern const uint8_t font6x8[][6];
 
 SSD1306::SSD1306(int address) {
-    const char* dev = "dev/i2c-1";
+    const char* dev = "/dev/i2c-1";
     fd = open(dev, O_RDWR);
     ioctl(fd, I2C_SLAVE, address);
     memset(buffer, 0, sizeof(buffer));
