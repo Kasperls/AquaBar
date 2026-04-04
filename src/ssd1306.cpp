@@ -66,7 +66,7 @@ void SSD1306::drawBigChar(int x, int y, char c) {
         for (int row = 0; row < 32; row++) {  // 32 rows
 
             int byteIndex = col * 4 + (row / 8);
-            bool pixelOn = (f[byteIndex] >> (row & 7)) & 1;
+            bool pixelOn = (f[byteIndex] >> (7 - (row & 7))) & 1;
 
             if (pixelOn) {
                 drawPixel(x + col, y + row, true);
