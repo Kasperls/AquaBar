@@ -166,6 +166,8 @@ def load_data():
 def save_data():
     payload = request.get_json(force=True)
 
+    os.kill(CPP_PID, signal.SIGUSR1)
+
     if isinstance(payload, dict) and "users" in payload:
         raw_users = payload["users"]
         if not isinstance(raw_users, list):
@@ -214,7 +216,6 @@ def save_data():
             users[index]["blocked"] = bool(update.get("blocked", False))
         write_users(users)
 
-    os.kill(CPP_PID, signal.SIGUSR1)
 
     return jsonify({"saved": True, "stats": build_stats(users)})
 
