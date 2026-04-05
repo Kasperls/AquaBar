@@ -222,9 +222,11 @@ def download_csv():
 
 
 if __name__ == "__main__":
-    # For maximum security: bind only to localhost
+    # Bind to all interfaces so Tailscale can reach it
+    # Password protection + Tailscale encryption provides security
     # Access via Tailscale: http://raspberrypi:5000
-    print("Starting Flask server on localhost:5000")
+    print("Starting Flask server on 0.0.0.0:5000")
     print("Access via Tailscale: http://raspberrypi:5000")
-    app.run(host="127.0.0.1", port=5000, debug=False, threaded=True)
+    print("Login password: admin")
+    app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
 
