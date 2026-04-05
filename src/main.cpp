@@ -219,7 +219,7 @@ int main()
         // --- --- --- HARDWARE INTERFACE --- --- ---
         auto now = Clock::now();
 
-        bool pin_reset = gpioRead(RESET_PIN);
+        bool pin_reset = lgGpioRead(lgio_handle, RESET_PIN);
         if (!pin_reset && !reset_pressed && now - last_reset_change >= debounce_interval)
         {
             std::string value_string_big = "Sum: 0";
@@ -242,7 +242,7 @@ int main()
             last_reset_change = now;
         }
 
-        bool pin_35 = gpioRead(PIN_VALUE_35);
+        bool pin_35 = lgGpioRead(lgio_handle, PIN_VALUE_35);
         if (!pin_35 && !input_35_pressed && now - last_35_change >= debounce_interval)
         {
             value += 35;
@@ -264,7 +264,7 @@ int main()
             last_35_change = now;
         }
 
-        bool pin_20 = gpioRead(PIN_VALUE_20);
+        bool pin_20 = lgGpioRead(lgio_handle, PIN_VALUE_20);
         if (!pin_20 && !input_20_pressed && now - last_20_change >= debounce_interval)
         {
             value += 20;
@@ -286,7 +286,7 @@ int main()
             last_20_change = now;
         }
 
-        bool pin_05 = gpioRead(PIN_VALUE_05);
+        bool pin_05 = lgGpioRead(lgio_handle, PIN_VALUE_05);
         if (!pin_05 && !input_05_pressed && now - last_05_change >= debounce_interval)
         {
             value += 5;
@@ -416,7 +416,7 @@ int main()
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
     }
-    gpioTerminate(); // cleanup pigpio on exit
+    lgGpiochipClose(lgio_handle); // cleanup pigpio on exit
     input.detach();
     // gui.detach();
     return 0;
