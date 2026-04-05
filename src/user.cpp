@@ -16,7 +16,7 @@ void User::setSpending(int value) {
 bool User::isBlocked() {
     return blocked;
 }
-const std::string& User::getBlocked() const { 
+const std::string& User::getBlocked() { 
     return std::to_string(blocked); 
 };
 

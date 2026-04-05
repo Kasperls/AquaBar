@@ -15,7 +15,7 @@ class User
 
         const std::string& getName() const { return name; };
         const std::string& getRFID() const { return rfid; };
-        const std::string& getBlocked() const ;
+        const std::string& getBlocked() ;
         int getSpending() const { return spending; };
 
         void addSpending(int value);
