@@ -404,13 +404,13 @@
 
 <div class="summary-row">
   <div class="summary-card summary-total">
-    <span class="summary-label">Total users</span>
+    <span class="summary-label">Antall brukere</span>
     <div class="summary-value">
       <span id="total-count">0</span>
     </div>
   </div>
   <div class="summary-card summary-blocked">
-    <span class="summary-label">Blocked users</span>
+    <span class="summary-label">Svartlistede brukere</span>
     <div class="summary-value">
       <span id="blocked-count">0</span>
     </div>
@@ -418,7 +418,7 @@
   <div class="toolbar-right" style="margin-left:auto; gap:10px; align-items:center;">
     <button class="btn btn-primary btn-large" id="load-data-btn" onclick="loadData()">Hent data</button>
     <button class="btn btn-primary" id="save-button" onclick="saveBlocked()" disabled>Eksporter data</button>
-    <button class="btn" id="add-user-button" onclick="showAddUserDialog()" disabled>Add user</button>
+    <button class="btn" id="add-user-button" onclick="showAddUserDialog()" disabled>Legg til bruker</button>
   </div>
 </div>
 
@@ -451,7 +451,7 @@
       <input type="text" class="search-input" id="search-input" placeholder="Søk navn..." oninput="setSearch(this.value)">
       <label class="toggle-label">
         <input type="checkbox" id="show-rfid-toggle" onchange="toggleRfid(this)">
-        show rfid
+        Vis RFID
       </label>
       <a id="export-link" href="/download" style="font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--text-muted); text-decoration:none;">&#x2193; Last ned data</a>
     </div>
@@ -459,9 +459,9 @@
   <table id="main-table">
     <thead>
       <tr>
-        <th class="sortable" onclick="setSort('name')">Name <span class="sort-indicator" id="sort-name"></span></th>
-        <th class="sortable" onclick="setSort('spent')">Spent <span class="sort-indicator" id="sort-spent"></span></th>
-        <th class="sortable" onclick="setSort('blocked')">Blocked <span class="sort-indicator" id="sort-blocked"></span></th>
+        <th class="sortable" onclick="setSort('name')">Navn <span class="sort-indicator" id="sort-name"></span></th>
+        <th class="sortable" onclick="setSort('spent')">Kritet <span class="sort-indicator" id="sort-spent"></span></th>
+        <th class="sortable" onclick="setSort('blocked')">Svartelistet <span class="sort-indicator" id="sort-blocked"></span></th>
       </tr>
     </thead>
     <tbody id="user-table">
