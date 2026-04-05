@@ -353,6 +353,7 @@ int main()
                     }
                     gui_command = GuiCommand::DRAW_CHECKOUT;
                     selected_user.addSpending(value);
+                    value = 0;  // Reset value after transaction
                 }
 
                 // A little cursed to try the whole code block, but to lazy to fix
