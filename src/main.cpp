@@ -149,6 +149,13 @@ int main()
     bool input_05_pressed = false;
     bool reset_pressed = false;
 
+    using Clock = std::chrono::steady_clock;
+    auto last_35_change = Clock::now();
+    auto last_20_change = Clock::now();
+    auto last_05_change = Clock::now();
+    auto last_reset_change = Clock::now();
+    const auto debounce_interval = std::chrono::milliseconds(50);
+
     std::atomic<bool> run = true;
 
     // command line thread variables
@@ -191,8 +198,10 @@ int main()
         }
 
         // --- --- --- HARDWARE INTERFACE --- --- ---
+        auto now = Clock::now();
+
         bool pin_reset = gpioRead(RESET_PIN);
-        if (!pin_reset && !reset_pressed)
+        if (!pin_reset && !reset_pressed && now - last_reset_change >= debounce_interval)
         {
             std::string value_string_big = "Sum: 0";
             std::string value_string_small = "Bruk knappene for å velge ønsket sum";
@@ -206,14 +215,16 @@ int main()
 
             value = 0;
             reset_pressed = true;
+            last_reset_change = now;
         }
-        if (pin_reset && reset_pressed)
+        if (pin_reset && reset_pressed && now - last_reset_change >= debounce_interval)
         {
             reset_pressed = false;
+            last_reset_change = now;
         }
 
         bool pin_35 = gpioRead(PIN_VALUE_35);
-        if (!pin_35 && !input_35_pressed)
+        if (!pin_35 && !input_35_pressed && now - last_35_change >= debounce_interval)
         {
             value += 35;
             std::string value_string = "Sum: " + std::to_string(value);
@@ -226,14 +237,16 @@ int main()
             gui_command = GuiCommand::DRAW_VALUE;
 
             input_35_pressed = true;
+            last_35_change = now;
         }
-        if (pin_35 && input_35_pressed)
+        if (pin_35 && input_35_pressed && now - last_35_change >= debounce_interval)
         {
             input_35_pressed = false;
+            last_35_change = now;
         }
 
         bool pin_20 = gpioRead(PIN_VALUE_20);
-        if (!pin_20 && !input_20_pressed)
+        if (!pin_20 && !input_20_pressed && now - last_20_change >= debounce_interval)
         {
             value += 20;
             std::string value_string = "Sum: " + std::to_string(value);
@@ -246,14 +259,16 @@ int main()
             gui_command = GuiCommand::DRAW_VALUE;
 
             input_20_pressed = true;
+            last_20_change = now;
         }
-        if (pin_20 && input_20_pressed)
+        if (pin_20 && input_20_pressed && now - last_20_change >= debounce_interval)
         {
             input_20_pressed = false;
+            last_20_change = now;
         }
 
         bool pin_05 = gpioRead(PIN_VALUE_05);
-        if (!pin_05 && !input_05_pressed)
+        if (!pin_05 && !input_05_pressed && now - last_05_change >= debounce_interval)
         {
             value += 5;
             std::string value_string = "Sum: " + std::to_string(value);
@@ -266,10 +281,12 @@ int main()
             gui_command = GuiCommand::DRAW_VALUE;
 
             input_05_pressed = true;
+            last_05_change = now;
         }
-        if (pin_05 && input_05_pressed)
+        if (pin_05 && input_05_pressed && now - last_05_change >= debounce_interval)
         {
             input_05_pressed = false;
+            last_05_change = now;
         }
         // --- --- --- COMMAND LINE INTERFACE --- --- ---
         switch (cl_command)
@@ -370,9 +387,9 @@ int main()
                 break;
             }
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
-        
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
     }
     gpioTerminate(); // cleanup pigpio on exit
     input.detach();
