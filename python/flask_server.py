@@ -107,7 +107,7 @@ def read_users():
 
 
 def backup_data():
-    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
     backup_path = os.path.join(BACKUP_DIR, f"data_backup_{timestamp}.csv")
     with open(DATA_PATH, "r", encoding="utf-8") as source:
         content = source.read()

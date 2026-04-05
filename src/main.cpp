@@ -223,7 +223,8 @@ int main()
     //     std::ref(gui_data_small));
 
     while (run)
-    {
+    {   
+        // ONLY CALLED WHEN YOU EXPECT TO NULL ALL VALUES
         if (reload_requested.exchange(false)) {
             user_manager.reloadUserManager();
             std::cout << "UserManager reloaded!" << std::endl;

@@ -47,7 +47,8 @@ UserManager::UserManager(const std::string& path_to_data) {
 
 }
 
-// Function for reloading the UserManager when a website update happends
+// Function for reloading the UserManager when a website update happends.
+/// @brief NULLS ALL THE AMOUNT/VALUES FIELD
 void UserManager::reloadUserManager() {
     std::ifstream data_file(full_path);
 
@@ -79,7 +80,7 @@ void UserManager::reloadUserManager() {
         user_vector.push_back(User{
             raw_line_vector[0],
             raw_line_vector[1],
-            std::stoi(raw_line_vector[2]),
+            0,
             std::stoi(raw_line_vector[3]) != 0
         });
     }
