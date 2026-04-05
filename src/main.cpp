@@ -47,6 +47,15 @@ void signal_handler(int signal) {
     reload_requested = true;
 }
 
+pid_t flask_pid = -1; // make it global so the handler can access it
+
+void cleanup(int sig) {
+    if (flask_pid > 0) {
+        kill(flask_pid, SIGTERM);
+    }
+    exit(0);
+}
+
 
 // !!! function written by claude.ai !!!
 std::string keycodeToChar(int code)
@@ -185,6 +194,10 @@ int main()
     std::ofstream pid_file("/home/piaqua/Desktop/AquaBar/res/ReloadSignal.pid");
     pid_file << getpid();
     pid_file.close();
+
+    // signal to close the flask pid
+    std::signal(SIGTERM, cleanup);
+    std::signal(SIGINT, cleanup);  // catches Ctrl+C
 
     pid_t flask_pid = fork();
     if (flask_pid < 0)
@@ -440,6 +453,12 @@ int main()
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
     }
+    // Clean up after loop finishes
+    if (flask_pid > 0) {
+        kill(flask_pid, SIGTERM);
+        waitpid(flask_pid, nullptr, 0);
+    }
+
     lgGpiochipClose(lgio_handle); // cleanup pigpio on exit
     input.detach();
     gui.detach();
