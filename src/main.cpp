@@ -194,7 +194,6 @@ int main()
         bool pin_reset = gpioRead(RESET_PIN);
         if (!pin_reset && !reset_pressed)
         {
-            std::cout << "[DEBUG] Reset pressed, value: " << value << std::endl;
             std::string value_string_big = "Sum: 0";
             std::string value_string_small = "Bruk knappene for å velge ønsket sum";
             print_gui(value_string_big);
@@ -211,15 +210,12 @@ int main()
         if (pin_reset && reset_pressed)
         {
             reset_pressed = false;
-            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Debounce release
         }
 
         bool pin_35 = gpioRead(PIN_VALUE_35);
         if (!pin_35 && !input_35_pressed)
         {
-            std::cout << "[DEBUG] Button 35 pressed, value before: " << value << std::endl;
             value += 35;
-            std::cout << "[DEBUG] Button 35 pressed, value after: " << value << std::endl;
             std::string value_string = "Sum: " + std::to_string(value);
             print_gui(value_string);
             {
@@ -234,7 +230,6 @@ int main()
         if (pin_35 && input_35_pressed)
         {
             input_35_pressed = false;
-            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Debounce release
         }
 
         bool pin_20 = gpioRead(PIN_VALUE_20);
@@ -255,7 +250,6 @@ int main()
         if (pin_20 && input_20_pressed)
         {
             input_20_pressed = false;
-            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Debounce release
         }
 
         bool pin_05 = gpioRead(PIN_VALUE_05);
@@ -276,7 +270,6 @@ int main()
         if (pin_05 && input_05_pressed)
         {
             input_05_pressed = false;
-            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Debounce release
         }
         // --- --- --- COMMAND LINE INTERFACE --- --- ---
         switch (cl_command)
