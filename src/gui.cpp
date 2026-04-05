@@ -21,7 +21,7 @@
 
 // Helper to render text centered at a y position
 static void drawTextCentered(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, int y, SDL_Color color) {
-    SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
+    SDL_Surface* surface = TTF_RenderUTF8_Solid(font, text.c_str(), color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     
     SDL_Rect dst = {0, y, surface->w, surface->h};
