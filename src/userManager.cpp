@@ -70,13 +70,15 @@ void UserManager::saveData(bool reset_value) {
             user.setSpending(0);
             file << user.getName() << "," 
             << user.getRFID() << "," 
+            << "0" << ","
             << "0" << "\n";
         }
     } else {
         for (const User& user : user_vector) {
             file << user.getName() << "," 
             << user.getRFID() << "," 
-            << user.getSpending() << "\n";
+            << user.getSpending() << ","
+            << user.getBlocked() << "\n";
         }
     }
     file.close();
