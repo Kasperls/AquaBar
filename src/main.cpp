@@ -169,6 +169,27 @@ int main()
     std::string gui_data_small = "Trykk på en knapp for å velge verdi";
     std::string gui_data_big = "Velkommen!";
     std::mutex gui_data_mutex;
+
+    pid_t flask_pid = fork();
+    if (flask_pid < 0)
+    {
+        perror("fork");
+    }
+    else if (flask_pid == 0)
+    {
+        // Change this path if your repo is in a different location
+        chdir("/home/piaqua/Desktop/AquaBar/python");
+        execlp("python3", "python3", "flask_server.py", (char *)NULL);
+
+        // If execlp fails:
+        perror("execlp");
+        _exit(1);
+    }
+    else
+    {
+        std::cout << "Started Flask server pid=" << flask_pid << std::endl;
+    }
+
     // --- --- --- PROGRAM LOOP --- --- ---
     std::thread input(
         inputThread,
