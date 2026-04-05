@@ -178,9 +178,9 @@ int main()
         std::ref(gui_data_big),
         std::ref(gui_data_small));
 
-    std::cout << "Before the loop" << std::endl;
     while (run)
     {
+        std::cout << "Inside the loop" << std::endl;
         {
             std::lock_guard<std::mutex> lock(gui_data_mutex);
             if (gui_data_big == "-----")
