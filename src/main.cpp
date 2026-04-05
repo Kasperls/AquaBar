@@ -407,11 +407,11 @@ int main()
                 std::cout << e.what() << std::endl;
                 gui_command = GuiCommand::DRAW_UNKOWN;
 
-                user_manager.saveData();
-                value = 0;
-
+                
             }
             
+            user_manager.saveData();
+            value = 0;
             cl_command = ClCommand::NONE;
             break;
         }
