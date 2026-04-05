@@ -14,5 +14,5 @@ add_executable(RFIDBar ${SOURCES})
 target_include_directories(RFIDBar PRIVATE src)
 
 if(UNIX)
-    target_link_libraries(RFIDBar pthread SDL2 SDL2_ttf lrgpio)
+    target_link_libraries(RFIDBar pthread SDL2 SDL2_ttf lgpio)
 endif()
