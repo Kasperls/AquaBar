@@ -170,13 +170,13 @@ int main()
         std::ref(cl_data_mutex),
         std::ref(cl_data));
 
-    // std::thread gui(
-    //     guiThread,
-    //     std::ref(run),
-    //     std::ref(gui_command),
-    //     std::ref(gui_data_mutex),
-    //     std::ref(gui_data_big),
-    //     std::ref(gui_data_small));
+    std::thread gui(
+        guiThread,
+        std::ref(run),
+        std::ref(gui_command),
+        std::ref(gui_data_mutex),
+        std::ref(gui_data_big),
+        std::ref(gui_data_small));
 
     while (run)
     {
@@ -211,6 +211,7 @@ int main()
         if (pin_reset && reset_pressed)
         {
             reset_pressed = false;
+            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Debounce release
         }
 
         bool pin_35 = gpioRead(PIN_VALUE_35);
@@ -233,6 +234,7 @@ int main()
         if (pin_35 && input_35_pressed)
         {
             input_35_pressed = false;
+            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Debounce release
         }
 
         bool pin_20 = gpioRead(PIN_VALUE_20);
@@ -253,6 +255,7 @@ int main()
         if (pin_20 && input_20_pressed)
         {
             input_20_pressed = false;
+            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Debounce release
         }
 
         bool pin_05 = gpioRead(PIN_VALUE_05);
@@ -273,6 +276,7 @@ int main()
         if (pin_05 && input_05_pressed)
         {
             input_05_pressed = false;
+            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Debounce release
         }
         // --- --- --- COMMAND LINE INTERFACE --- --- ---
         switch (cl_command)
@@ -378,7 +382,7 @@ int main()
     }
     gpioTerminate(); // cleanup pigpio on exit
     input.detach();
-    // gui.detach();
+    gui.detach();
     return 0;
 }
 
