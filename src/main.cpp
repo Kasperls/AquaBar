@@ -119,10 +119,11 @@ int main() {
     std::cout << "Running on RP" << std::endl;
 
     // Start Flask web server in background
+    // Use nohup to ensure process survives SSH disconnection
     pid_t flask_pid = fork();
     if (flask_pid == 0) {
         // Child process - start Flask server
-        std::string python_cmd = "cd /home/piaqua/Desktop/AquaBar/python && python3 flask_server.py";
+        std::string python_cmd = "cd /home/piaqua/Desktop/AquaBar/python && nohup python3 flask_server.py > /tmp/flask.log 2>&1 &";
         execl("/bin/sh", "sh", "-c", python_cmd.c_str(), (char*)NULL);
         // If execl fails
         std::cerr << "Failed to start Flask server" << std::endl;
@@ -133,7 +134,9 @@ int main() {
     } else {
         std::cout << "Flask server started with PID: " << flask_pid << std::endl;
         // Give Flask server time to start up
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+        std::this_thread::sleep_for(std::chrono::seconds(3));
+        std::cout << "Access the web server at: http://raspberrypi:5000" << std::endl;
+        std::cout << "Flask logs are saved to: /tmp/flask.log" << std::endl;
     }
 
     UserManager user_manager = UserManager{"/home/piaqua/Desktop/AquaBar/res/data.csv"};
