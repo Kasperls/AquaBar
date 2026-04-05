@@ -39,7 +39,7 @@ UserManager::UserManager(const std::string& path_to_data) {
             raw_line_vector[0],
             raw_line_vector[1],
             std::stoi(raw_line_vector[2]),
-            std::stoi(raw_line_vector[3])
+            std::stoi(raw_line_vector[3]) != 0
         });
 
     }
