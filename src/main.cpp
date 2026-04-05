@@ -378,7 +378,7 @@ int main()
     }
     gpioTerminate(); // cleanup pigpio on exit
     input.detach();
-    gui.detach();
+    // gui.detach();
     return 0;
 }
 
