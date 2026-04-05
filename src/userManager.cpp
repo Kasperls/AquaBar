@@ -78,7 +78,7 @@ void UserManager::saveData(bool reset_value) {
             file << user.getName() << "," 
             << user.getRFID() << "," 
             << user.getSpending() << ","
-            << user.getBlocked() << "\n";
+            << user.isBlockedStr() << "\n";
         }
     }
     file.close();

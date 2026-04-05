@@ -16,9 +16,14 @@ void User::setSpending(int value) {
 bool User::isBlocked() {
     return blocked;
 }
-const std::string& User::getBlocked() { 
-    return std::to_string(blocked); 
+
+bool User::isBlockedStr() const {
+    return blocked;
 };
+
+// const std::string& User::getBlocked() { 
+//     return std::to_string(blocked); 
+// };
 
 std::string User::getPrintableData(bool print_id) const {
     std::string return_text = "Name: ";
