@@ -141,7 +141,7 @@ int main()
     std::cout << "Running on RP" << std::endl;
 
     UserManager user_manager = UserManager{"/home/piaqua/Desktop/AquaBar/res/data.csv"};
-    user_manager.printUsers();
+    // user_manager.printUsers();
 
     int value = 0;
     bool input_35_pressed = false;
@@ -162,7 +162,6 @@ int main()
     std::string gui_data_small = "Trykk på en knapp for å velge verdi";
     std::string gui_data_big = "Velkommen!";
     std::mutex gui_data_mutex;
-
     // --- --- --- PROGRAM LOOP --- --- ---
     std::thread input(
         inputThread,
@@ -179,6 +178,7 @@ int main()
         std::ref(gui_data_big),
         std::ref(gui_data_small));
 
+    std::cout << "Before the loop" << std::endl;
     while (run)
     {
         {
@@ -315,7 +315,7 @@ int main()
 
                     while (std::getline(data_csv, line))
                     {
-                        std::cout << line << std::endl;
+                        // std::cout << line << std::endl;
                         data_csv_string += line + "\n";
                     }
 
