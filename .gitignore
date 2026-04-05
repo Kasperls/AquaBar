@@ -3,3 +3,5 @@ res/backups/*
 !res/backups/.gitkeep
 .VSCodeCounter/
 python/config.py
+__pycache__/
+*.pyc
