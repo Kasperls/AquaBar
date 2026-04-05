@@ -170,13 +170,13 @@ int main()
         std::ref(cl_data_mutex),
         std::ref(cl_data));
 
-    std::thread gui(
-        guiThread,
-        std::ref(run),
-        std::ref(gui_command),
-        std::ref(gui_data_mutex),
-        std::ref(gui_data_big),
-        std::ref(gui_data_small));
+    // std::thread gui(
+    //     guiThread,
+    //     std::ref(run),
+    //     std::ref(gui_command),
+    //     std::ref(gui_data_mutex),
+    //     std::ref(gui_data_big),
+    //     std::ref(gui_data_small));
 
     while (run)
     {
@@ -194,6 +194,7 @@ int main()
         bool pin_reset = gpioRead(RESET_PIN);
         if (!pin_reset && !reset_pressed)
         {
+            std::cout << "[DEBUG] Reset pressed, value: " << value << std::endl;
             std::string value_string_big = "Sum: 0";
             std::string value_string_small = "Bruk knappene for å velge ønsket sum";
             print_gui(value_string_big);
@@ -215,7 +216,9 @@ int main()
         bool pin_35 = gpioRead(PIN_VALUE_35);
         if (!pin_35 && !input_35_pressed)
         {
+            std::cout << "[DEBUG] Button 35 pressed, value before: " << value << std::endl;
             value += 35;
+            std::cout << "[DEBUG] Button 35 pressed, value after: " << value << std::endl;
             std::string value_string = "Sum: " + std::to_string(value);
             print_gui(value_string);
             {
