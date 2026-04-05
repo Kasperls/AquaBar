@@ -34,6 +34,10 @@
 
 std::atomic<ClCommand> cl_command = ClCommand{0};
 
+// reload request from the flask app
+std::atomic<bool> reload_requested = false;
+
+
 void print_gui(const std::string &str)
 {
     std::cout << str << std::endl;
@@ -175,7 +179,6 @@ int main()
     std::mutex gui_data_mutex;
 
     // reload request from the flask app
-    std::atomic<bool> reload_requested = false;
     std::signal(SIGUSR1, signal_handler);
 
 
