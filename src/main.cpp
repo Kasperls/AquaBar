@@ -154,7 +154,7 @@ int main()
     auto last_20_change = Clock::now();
     auto last_05_change = Clock::now();
     auto last_reset_change = Clock::now();
-    const auto debounce_interval = std::chrono::milliseconds(50);
+    const auto debounce_interval = std::chrono::milliseconds(25);
 
     std::atomic<bool> run = true;
 
@@ -366,6 +366,7 @@ int main()
                 else if (selected_user.isBlocked())
                 {
                     gui_command = GuiCommand::DRAW_BLOCKED;
+                    std::cout << "blocked" << std::endl;
                 }
                 else if (value == 0)
                 {
@@ -378,6 +379,7 @@ int main()
                         gui_data_small = user_spending_string;
                     }
                     gui_command = GuiCommand::DRAW_SPENDING;
+                    std::cout << "User has spent: " << std::to_string(selected_user.getSpending()) << std::endl;
                 }
                 else
                 {
@@ -391,13 +393,17 @@ int main()
                     }
                     gui_command = GuiCommand::DRAW_CHECKOUT;
                     selected_user.addSpending(value);
+                    std::cout << "Krysset: " << std::to_string(value) << std::endl;
+
                     value = 0;  // Reset value after transaction
                 }
 
                 // A little cursed to try the whole code block, but to lazy to fix
             }
             catch (std::runtime_error &e)
-            {
+            {   
+                std::cout << "caught error" << std::endl;
+
                 std::cout << e.what() << std::endl;
                 gui_command = GuiCommand::DRAW_UNKOWN;
 
