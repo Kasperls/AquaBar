@@ -371,12 +371,12 @@ int main()
             }
 
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        }
+    }
 
-        gpioTerminate(); // cleanup pigpio on exit
-        input.detach();
-        gui.detach();
-        return 0;
+    gpioTerminate(); // cleanup pigpio on exit
+    input.detach();
+    gui.detach();
+    return 0;
     }
 }
 
