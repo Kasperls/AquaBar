@@ -214,13 +214,13 @@ int main()
         std::ref(cl_data_mutex),
         std::ref(cl_data));
 
-    // std::thread gui(
-    //     guiThread,
-    //     std::ref(run),
-    //     std::ref(gui_command),
-    //     std::ref(gui_data_mutex),
-    //     std::ref(gui_data_big),
-    //     std::ref(gui_data_small));
+    std::thread gui(
+        guiThread,
+        std::ref(run),
+        std::ref(gui_command),
+        std::ref(gui_data_mutex),
+        std::ref(gui_data_big),
+        std::ref(gui_data_small));
 
     while (run)
     {   
@@ -442,7 +442,7 @@ int main()
     }
     lgGpiochipClose(lgio_handle); // cleanup pigpio on exit
     input.detach();
-    // gui.detach();
+    gui.detach();
     return 0;
 }
 
