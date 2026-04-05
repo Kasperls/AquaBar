@@ -410,10 +410,10 @@ int main()
                 user_manager.saveData();
                 value = 0;
 
-                cl_command = ClCommand::NONE;
-                break;
             }
-
+            
+            cl_command = ClCommand::NONE;
+            break;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
