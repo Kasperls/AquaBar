@@ -47,6 +47,44 @@ UserManager::UserManager(const std::string& path_to_data) {
 
 }
 
+// Function for reloading the UserManager when a website update happends
+void UserManager::reloadUserManager() {
+    std::ifstream data_file(full_path);
+
+    if (!data_file.is_open()) {
+        std::cout << "Failed to open file!" << std::endl;
+        return;
+    }
+    int lineCount = 0;
+    std::string line;
+    while (std::getline(data_file, line)) {
+        lineCount++;
+    }
+
+    data_file.clear();
+    data_file.seekg(0);
+    user_vector.clear();
+    user_vector.reserve(lineCount);
+    
+    while (std::getline(data_file, line)) {
+        // "Kasper,3481191757,300,0"
+        std::stringstream ss(line);
+        std::string element;
+        
+        std::vector<std::string> raw_line_vector;
+        while (std::getline(ss, element, ',')) {
+            raw_line_vector.push_back(element);
+        }
+
+        user_vector.push_back(User{
+            raw_line_vector[0],
+            raw_line_vector[1],
+            std::stoi(raw_line_vector[2]),
+            std::stoi(raw_line_vector[3]) != 0
+        });
+    }
+}
+
 std::vector<User>& UserManager::getUsers() {
     return user_vector;
 }

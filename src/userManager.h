@@ -15,6 +15,7 @@ class UserManager
     
     public:
         UserManager(const std::string& path_to_data);
+        void reloadUserManager();
 
         std::vector<User>& getUsers();
         const std::vector<User>& getUsers() const;

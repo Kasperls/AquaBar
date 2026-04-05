@@ -5,6 +5,7 @@ import csv
 import datetime
 import os
 import threading
+import signal
 
 from functools import wraps
 
@@ -22,6 +23,9 @@ os.makedirs(BACKUP_DIR, exist_ok=True)
 app = Flask(__name__, template_folder=TEMPLATE_DIR)
 app.secret_key = 'aqua-bar-secure-session-key-2024-change-this-randomly'  # CHANGE THIS TO A RANDOM STRING
 file_lock = threading.Lock()
+
+with open('/home/piaqua/Desktop/AquaBar/res/ReloadSignal.pid') as f:
+        CPP_PID = int(f.read())
 
 # Password configuration
 # Create a file named config.py in the same directory as this script.
@@ -210,6 +214,8 @@ def save_data():
             users[index]["blocked"] = bool(update.get("blocked", False))
         write_users(users)
 
+    os.kill(CPP_PID, signal.SIGUSR1)
+
     return jsonify({"saved": True, "stats": build_stats(users)})
 
 
@@ -225,6 +231,7 @@ if __name__ == "__main__":
     # Bind to all interfaces so Tailscale can reach it
     # Password protection + Tailscale encryption provides security
     # Access via Tailscale: http://raspberrypi:5000
+
     print("Starting Flask server on 0.0.0.0:5000")
     print("Access via Tailscale: http://raspberrypi:5000")
     print("Login password: admin")

@@ -8,6 +8,7 @@
 #include <chrono>
 #include <atomic>
 #include <mutex>
+#include <csignal>
 
 #include <fstream>
 #include <iostream>
@@ -37,6 +38,11 @@ void print_gui(const std::string &str)
 {
     std::cout << str << std::endl;
 }
+
+void signal_handler(int signal) {
+    reload_requested = true;
+}
+
 
 // !!! function written by claude.ai !!!
 std::string keycodeToChar(int code)
@@ -168,6 +174,15 @@ int main()
     std::string gui_data_big = "Velkommen!";
     std::mutex gui_data_mutex;
 
+    // reload request from the flask app
+    std::atomic<bool> reload_requested = false;
+    std::signal(SIGUSR1, signal_handler);
+
+
+    std::ofstream pid_file("/home/piaqua/Desktop/AquaBar/res/ReloadSignal.pid");
+    pid_file << getpid();
+    pid_file.close();
+
     pid_t flask_pid = fork();
     if (flask_pid < 0)
     {
@@ -206,6 +221,11 @@ int main()
 
     while (run)
     {
+        if (reload_requested.exchange(false)) {
+            user_manager.reloadUserManager();
+            std::cout << "UserManager reloaded!" << std::endl;
+        }
+
         {
             std::lock_guard<std::mutex> lock(gui_data_mutex);
             if (gui_data_big == "-----")
