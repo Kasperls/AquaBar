@@ -1,0 +1,17 @@
+[Unit]
+Description=Aqua Bar Flask Web Server
+After=network.target tailscaled.service
+Requires=tailscaled.service
+
+[Service]
+Type=simple
+User=piaqua
+WorkingDirectory=/home/piaqua/Desktop/AquaBar/python
+ExecStart=/usr/bin/python3 flask_server.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

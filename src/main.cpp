@@ -22,9 +22,10 @@
 #include <fcntl.h>
 #endif
 
-#ifdef __linux__
-    #include <pigpio.h>
-#endif
+#include <unistd.h>
+#include <sys/wait.h>
+#include <signal.h>
+#include <pigpio.h>
 
 #define PIN_VALUE_35 26
 #define PIN_VALUE_20 13
@@ -116,6 +117,24 @@ int main() {
     
 
     std::cout << "Running on RP" << std::endl;
+
+    // Start Flask web server in background
+    pid_t flask_pid = fork();
+    if (flask_pid == 0) {
+        // Child process - start Flask server
+        std::string python_cmd = "cd /home/piaqua/Desktop/AquaBar/python && python3 flask_server.py";
+        execl("/bin/sh", "sh", "-c", python_cmd.c_str(), (char*)NULL);
+        // If execl fails
+        std::cerr << "Failed to start Flask server" << std::endl;
+        exit(1);
+    } else if (flask_pid < 0) {
+        std::cerr << "Failed to fork Flask server process" << std::endl;
+        return 1;
+    } else {
+        std::cout << "Flask server started with PID: " << flask_pid << std::endl;
+        // Give Flask server time to start up
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+    }
 
     UserManager user_manager = UserManager{"/home/piaqua/Desktop/AquaBar/res/data.csv"};
     user_manager.printUsers();
@@ -296,6 +315,8 @@ int main() {
                         user_manager.saveData(true);
                         
 
+                    } else if (selected_user.isBlocked()) {
+                        gui_command = GuiCommand::DRAW_BLOCKED;
                     } else if (value == 0) {
                         std::string user_spending_string = "I dag har du brukt: " + std::to_string(selected_user.getSpending());
                         print_gui(user_spending_string);
@@ -316,15 +337,14 @@ int main() {
                             gui_data_small = "Krysset på: " + selected_user.getName();
                         }
                         gui_command = GuiCommand::DRAW_CHECKOUT;
+                        selected_user.addSpending(value);
                     }
 
-                    selected_user.addSpending(value);
                     
-
+                // A little cursed to try the whole code block, but to lazy to fix
                 } catch (std::runtime_error& e) {
                     std::cout << e.what() << std::endl;
                     gui_command = GuiCommand::DRAW_UNKOWN;
-                }
                 
                 
                 user_manager.saveData();
@@ -335,6 +355,18 @@ int main() {
         } 
 
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
+    
+    // Clean shutdown: terminate Flask server
+    if (flask_pid > 0) {
+        std::cout << "Terminating Flask server..." << std::endl;
+        kill(flask_pid, SIGTERM);
+        // Wait a bit for graceful shutdown
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        // Force kill if still running
+        kill(flask_pid, SIGKILL);
+        waitpid(flask_pid, NULL, 0);
+        std::cout << "Flask server terminated" << std::endl;
     }
     
     gpioTerminate();  // cleanup pigpio on exit

@@ -27,5 +27,4 @@ class UserManager
 
         const std::string& getPath() const;
 
-        // void writeUserData(unsigned int index);
 };

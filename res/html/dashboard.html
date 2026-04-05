@@ -48,74 +48,109 @@
 
   .header-left h1 {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 20px;
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
   }
 
-  .header-left p {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 3px;
-  }
-
+  .header-left p,
   .header-right {
+    display: none;
+  }
+
+  .summary-row {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
   }
 
-  .pill {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-muted);
-  }
-
-  .pill.live::before {
-    content: '';
-    display: inline-block;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    margin-right: 6px;
-    vertical-align: middle;
-  }
-
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 2rem;
-  }
-
-  .stat-card {
+  .summary-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1rem 1.25rem;
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.04);
   }
 
-  .stat-card .label {
+  .summary-card .summary-label {
+    display: block;
     font-size: 11px;
     font-family: 'IBM Plex Mono', monospace;
     color: var(--text-faint);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 6px;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
   }
 
-  .stat-card .value {
-    font-size: 26px;
-    font-weight: 300;
-    font-family: 'IBM Plex Mono', monospace;
-    letter-spacing: -0.03em;
+  .summary-card .summary-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
   }
 
-  .stat-card .value.danger { color: var(--danger); }
+  .summary-card.summary-total {
+    border-color: #1e6b3c;
+    background: rgba(30, 107, 60, 0.08);
+  }
+
+  .summary-card.summary-blocked {
+    border-color: #b83232;
+    background: rgba(184, 50, 50, 0.08);
+  }
+
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    z-index: 20;
+  }
+
+  .modal-backdrop.visible { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    width: min(480px, 100%);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+  }
+
+  .modal h2 {
+    margin-bottom: 1rem;
+    font-size: 20px;
+  }
+
+  .modal label {
+    display: block;
+    margin-bottom: 1rem;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .modal input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    margin-top: 6px;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .stats {
+    display: none;
+  }
 
   .table-card {
     background: var(--surface);
@@ -127,8 +162,10 @@
 
   .table-toolbar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
     padding: 0.875rem 1.25rem;
     border-bottom: 1px solid var(--border);
   }
@@ -141,8 +178,49 @@
 
   .toolbar-right {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 16px;
+    gap: 10px;
+  }
+
+  .search-input {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    width: 150px;
+  }
+
+  th.sortable {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  th.sortable:hover {
+    color: var(--accent);
+  }
+
+  th.sortable .sort-indicator {
+    font-size: 12px;
+    margin-left: 4px;
+    color: var(--text-faint);
+  }
+
+  .btn-primary {
+    background: var(--green);
+    border-color: #18502e;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #1a8a4a;
+    border-color: #166036;
+    color: white;
+  }
+
+  .btn-large {
+    padding: 12px 22px;
+    font-size: 15px;
   }
 
   .toggle-label {
@@ -166,6 +244,7 @@
   table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
   }
 
   thead th {
@@ -178,6 +257,7 @@
     padding: 10px 1.25rem;
     text-align: left;
     border-bottom: 1px solid var(--border);
+    width: 33.33%;
   }
 
   thead th:last-child { text-align: center; }
@@ -315,47 +395,73 @@
 
 <div class="header">
   <div class="header-left">
-    <h1>tracker / dashboard</h1>
-    <p>Week 12 — Last sync: 2025-03-24 08:41</p>
+    <h1>Kriteliste Aqua</h1>
   </div>
   <div class="header-right">
-    <span class="pill live">pi online</span>
-    <span class="pill">open wifi</span>
+    <button id="logout-btn" class="btn btn-secondary">Logg ut</button>
   </div>
 </div>
 
-<div class="stats">
-  <div class="stat-card">
-    <div class="label">Total users</div>
-    <div class="value">10</div>
+<div class="summary-row">
+  <div class="summary-card summary-total">
+    <span class="summary-label">Total users</span>
+    <div class="summary-value">
+      <span id="total-count">0</span>
+    </div>
   </div>
-  <div class="stat-card">
-    <div class="label">Total spent</div>
-    <div class="value">2 840</div>
+  <div class="summary-card summary-blocked">
+    <span class="summary-label">Blocked users</span>
+    <div class="summary-value">
+      <span id="blocked-count">0</span>
+    </div>
   </div>
-  <div class="stat-card">
-    <div class="label">Blocked</div>
-    <div class="value danger">2</div>
+  <div class="toolbar-right" style="margin-left:auto; gap:10px; align-items:center;">
+    <button class="btn btn-primary btn-large" id="load-data-btn" onclick="loadData()">Hent data</button>
+    <button class="btn btn-primary" id="save-button" onclick="saveBlocked()" disabled>Eksporter data</button>
+    <button class="btn" id="add-user-button" onclick="showAddUserDialog()" disabled>Add user</button>
   </div>
 </div>
 
-<div class="table-card">
+<div class="modal-backdrop" id="add-user-modal">
+  <div class="modal">
+    <h2>Legg til bruker</h2>
+    <label>
+      Navn
+      <input id="new-user-name" type="text" placeholder="Navn" />
+    </label>
+    <label>
+      RFID
+      <input id="new-user-rfid" type="text" placeholder="RFID" />
+    </label>
+    <label>
+      Gjeng
+      <input id="new-user-gjeng" type="text" placeholder="Gjeng (valgfritt)" />
+    </label>
+    <div class="modal-actions">
+      <button class="btn" type="button" onclick="hideAddUserDialog()">Avbryt</button>
+      <button class="btn btn-primary" type="button" onclick="submitAddUser()">Legg til</button>
+    </div>
+  </div>
+</div>
+
+<div class="table-card" id="table-card">
   <div class="table-toolbar">
-    <span>users — week_12_data.csv</span>
+    <span id="data-label">users — data.csv (not loaded)</span>
     <div class="toolbar-right">
+      <input type="text" class="search-input" id="search-input" placeholder="Søk navn..." oninput="setSearch(this.value)">
       <label class="toggle-label">
         <input type="checkbox" id="show-rfid-toggle" onchange="toggleRfid(this)">
         show rfid
       </label>
-      <a href="/download" style="font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--text-muted); text-decoration:none;">&#x2193; download csv</a>
+      <a id="export-link" href="/download" style="font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--text-muted); text-decoration:none;">&#x2193; Last ned data</a>
     </div>
   </div>
   <table id="main-table">
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Spent</th>
-        <th>Blocked</th>
+        <th class="sortable" onclick="setSort('name')">Name <span class="sort-indicator" id="sort-name"></span></th>
+        <th class="sortable" onclick="setSort('spent')">Spent <span class="sort-indicator" id="sort-spent"></span></th>
+        <th class="sortable" onclick="setSort('blocked')">Blocked <span class="sort-indicator" id="sort-blocked"></span></th>
       </tr>
     </thead>
     <tbody id="user-table">
@@ -364,61 +470,128 @@
   </table>
 </div>
 
-<div class="actions">
-  <button class="btn btn-danger" onclick="showConfirm()">Reset all data</button>
-  <div class="confirm-bar" id="confirm-bar">
-    <strong>Are you sure?</strong> This will wipe all weekly data.
-    <button class="btn-confirm" onclick="submitReset()">Yes, reset</button>
-    <button class="btn-cancel" onclick="hideConfirm()">Cancel</button>
-  </div>
-  <button class="btn" onclick="saveBlocked()">Save changes</button>
-</div>
-
 <div class="footer">
-  <span>raspberry pi 3b+ — institution tracker v1.0</span>
+  <span>Kritebar Aqua utviklet av Kasper | Spørsmål: kaspel@samfundet.no</span>
   <span id="save-status"></span>
 </div>
 
 <script>
-  /*
-    Mock data — in real Flask this table is rendered server-side via Jinja2.
-    CSV columns: name, rfid, spent, blocked
-  */
-  const users = [
-    { rfid: "A3F2910C", name: "Anna Berg",    spent: 340, blocked: false },
-    { rfid: "B7E4023D", name: "Erik Dahl",    spent: 500, blocked: true  },
-    { rfid: "C1D5834E", name: "Maja Holm",    spent: 120, blocked: false },
-    { rfid: "D9C6745F", name: "Lars Strand",  spent: 490, blocked: true  },
-    { rfid: "E2B7856A", name: "Sofie Lie",    spent: 210, blocked: false },
-    { rfid: "F4A8967B", name: "Jonas Viken",  spent: 85,  blocked: false },
-    { rfid: "0593A78C", name: "Ingrid Bakke", spent: 305, blocked: false },
-    { rfid: "1682B89D", name: "Nils Haug",    spent: 450, blocked: false },
-    { rfid: "2771C90E", name: "Kari Moen",    spent: 60,  blocked: false },
-    { rfid: "3860D01F", name: "Per Lund",     spent: 280, blocked: false },
-  ];
+  let users = [];
+  let dataLoaded = false;
+  let currentSort = { key: null, ascending: true };
+  let searchTerm = "";
 
   function buildTable() {
     const tbody = document.getElementById("user-table");
     tbody.innerHTML = "";
-    users.forEach(u => {
+
+    let displayUsers = users.filter(user => user.name.toLowerCase().includes(searchTerm));
+    displayUsers = displayUsers.slice();
+
+    if (currentSort.key) {
+      displayUsers.sort((a, b) => {
+        const key = currentSort.key;
+        let lhs = a[key];
+        let rhs = b[key];
+
+        if (key === "name") {
+          lhs = String(lhs).toLowerCase();
+          rhs = String(rhs).toLowerCase();
+          return currentSort.ascending ? lhs.localeCompare(rhs) : rhs.localeCompare(lhs);
+        }
+
+        if (key === "spent") {
+          return currentSort.ascending ? lhs - rhs : rhs - lhs;
+        }
+
+        if (key === "blocked") {
+          lhs = a.blocked ? 1 : 0;
+          rhs = b.blocked ? 1 : 0;
+          return currentSort.ascending ? lhs - rhs : rhs - lhs;
+        }
+
+        return 0;
+      });
+    }
+
+    displayUsers.forEach((user) => {
       const tr = document.createElement("tr");
-      if (u.blocked) tr.classList.add("is-blocked");
+      if (user.blocked) tr.classList.add("is-blocked");
+
       tr.innerHTML =
         "<td>" +
-          "<div class='user-name'>" + u.name + (u.blocked ? "<span class='badge'>blocked</span>" : "") + "</div>" +
-          "<div class='rfid-sub'>" + u.rfid + "</div>" +
+          "<div class='user-name'>" + user.name + (user.blocked ? "<span class='badge'>blocked</span>" : "") + "</div>" +
+          "<div class='rfid-sub'>" + user.rfid + "</div>" +
         "</td>" +
-        "<td class='spent-cell'>" + u.spent + "</td>" +
+        "<td class='spent-cell'>" + user.spent + "</td>" +
         "<td class='blocked-cell'>" +
-          "<input type='checkbox' data-id='" + u.rfid + "' " + (u.blocked ? "checked" : "") + " onchange='onBlockedChange(this)'>" +
+          "<input type='checkbox' data-id='" + user.rfid + "' " + (user.blocked ? "checked" : "") + " onchange='onBlockedChange(this)'>" +
         "</td>";
       tbody.appendChild(tr);
     });
   }
 
-  buildTable();
+  function setButtons(enabled) {
+    document.getElementById("save-button").disabled = !enabled;
+    document.getElementById("add-user-button").disabled = !enabled;
+    document.getElementById("show-rfid-toggle").disabled = !enabled;
+    document.getElementById("search-input").disabled = !enabled;
+  }
 
-  /* Toggling one class on the table shows/hides all RFID lines */
+  function clearSortIndicators() {
+    ["name", "spent", "blocked"].forEach((key) => {
+      document.getElementById(`sort-${key}`).textContent = "";
+    });
+  }
+
+  function setSort(key) {
+    if (currentSort.key === key) {
+      currentSort.ascending = !currentSort.ascending;
+    } else {
+      currentSort.key = key;
+      currentSort.ascending = true;
+    }
+
+    clearSortIndicators();
+    document.getElementById(`sort-${key}`).textContent = currentSort.ascending ? "▲" : "▼";
+    buildTable();
+  }
+
+  function setSearch(value) {
+    searchTerm = value.toLowerCase();
+    buildTable();
+  }
+
+  function updateBlockSummary() {
+    const total = users.length;
+    const blocked = users.filter(user => user.blocked).length;
+    document.getElementById("blocked-count").textContent = blocked;
+    document.getElementById("total-count").textContent = total;
+  }
+
+  async function loadData() {
+    setStatus("Loading data...");
+    try {
+      const response = await fetch("/load", { method: "POST" });
+      if (!response.ok) throw new Error(`Load failed: ${response.status}`);
+      const payload = await response.json();
+      users = payload.users || [];
+      dataLoaded = true;
+      searchTerm = "";
+      document.getElementById("search-input").value = "";
+      buildTable();
+      setButtons(true);
+      updateBlockSummary();
+      document.getElementById("data-label").textContent = `users — data.csv (${users.length} rows)`;
+      document.getElementById("export-link").style.display = "inline-block";
+      document.getElementById("table-card").style.display = "block";
+      setStatus(`Loaded ${users.length} users. Backup created: ${payload.backup}`);
+    } catch (error) {
+      console.error(error);
+      setStatus("Unable to load data. See console.");
+    }
+  }
+
   function toggleRfid(checkbox) {
     document.getElementById("main-table").classList.toggle("show-rfid", checkbox.checked);
   }
@@ -426,50 +599,100 @@
   function onBlockedChange(checkbox) {
     const row = checkbox.closest("tr");
     row.classList.toggle("is-blocked", checkbox.checked);
-    setStatus("Staged: " + checkbox.dataset.id + " \u2192 " + (checkbox.checked ? "blocked" : "unblocked"));
-    /*
-      fetch("/set-blocked", {
+    const target = users.find(user => user.rfid === checkbox.dataset.id);
+    if (target) {
+      target.blocked = checkbox.checked;
+      updateBlockSummary();
+      setStatus("Staged: " + checkbox.dataset.id + " → " + (checkbox.checked ? "blocked" : "unblocked"));
+    }
+  }
+
+  async function saveBlocked() {
+    if (!dataLoaded) {
+      setStatus("Load the data first.");
+      return;
+    }
+
+    setStatus("Saving data...");
+    try {
+      const response = await fetch("/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rfid: checkbox.dataset.id, blocked: checkbox.checked })
+        body: JSON.stringify({ users }),
       });
-    */
+      if (!response.ok) throw new Error(`Save failed: ${response.status}`);
+      const result = await response.json();
+      setStatus(`Saved. Blocked: ${result.stats.blocked}, Total users: ${result.stats.total_users}`);
+      document.getElementById("export-link").style.display = "none";
+      document.getElementById("data-label").textContent = "Data exported";
+      document.getElementById("table-card").style.display = "none";
+    } catch (error) {
+      console.error(error);
+      setStatus("Unable to save data. See console.");
+    }
   }
 
-  function saveBlocked() {
-    const checkboxes = document.querySelectorAll("#user-table input[type=checkbox]");
-    const payload = Array.from(checkboxes).map(cb => ({ rfid: cb.dataset.id, blocked: cb.checked }));
-    /*
-      fetch("/save-blocked", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      }).then(() => setStatus("Saved"));
-    */
-    setStatus("Changes saved");
+  function showAddUserDialog() {
+    if (!dataLoaded) {
+      setStatus("Load data before adding a user.");
+      return;
+    }
+    document.getElementById("add-user-modal").classList.add("visible");
   }
 
-  function showConfirm() {
-    document.getElementById("confirm-bar").classList.add("visible");
+  function hideAddUserDialog() {
+    document.getElementById("add-user-modal").classList.remove("visible");
   }
 
-  function hideConfirm() {
-    document.getElementById("confirm-bar").classList.remove("visible");
-  }
+  function submitAddUser() {
+    const nameInput = document.getElementById("new-user-name");
+    const rfidInput = document.getElementById("new-user-rfid");
+    const gjengInput = document.getElementById("new-user-gjeng");
+    const name = nameInput.value.trim();
+    const rfid = rfidInput.value.trim();
+    const gjeng = gjengInput.value.trim();
 
-  function submitReset() {
-    /*
-      fetch("/reset", { method: "POST" }).then(() => location.reload());
-    */
-    hideConfirm();
-    setStatus("Data reset — reload to confirm");
+    if (!name || !rfid) {
+      setStatus("Name and RFID are required.");
+      return;
+    }
+
+    users.push({
+      name,
+      rfid,
+      spent: 0,
+      blocked: false,
+      gjeng,
+    });
+
+    buildTable();
+    updateBlockSummary();
+    hideAddUserDialog();
+    setStatus(`Added ${name}. Remember to save data.`);
+    nameInput.value = "";
+    rfidInput.value = "";
+    gjengInput.value = "";
   }
 
   function setStatus(msg) {
     const el = document.getElementById("save-status");
     el.textContent = msg;
-    setTimeout(function() { el.textContent = ""; }, 4000);
+    setTimeout(() => { if (el.textContent === msg) el.textContent = ""; }, 4000);
   }
+
+  setButtons(false);
+
+  // Logout functionality
+  document.getElementById("logout-btn").addEventListener("click", () => {
+    fetch("/logout", { method: "POST" })
+      .then(() => {
+        window.location.href = "/login";
+      })
+      .catch(err => {
+        console.error("Logout failed:", err);
+        window.location.href = "/login";
+      });
+  });
 </script>
 
 </body>

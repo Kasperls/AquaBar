@@ -10,7 +10,8 @@ enum class GuiCommand {
     DRAW_CHECKOUT,   // Known RFID scanned
     DRAW_VALUE,      // Reset and increment value
     DRAW_UNKOWN,     // Unknown RFID scanned
-    DRAW_END         // Reset-RFID scanned
+    DRAW_END,        // Reset-RFID scanned
+    DRAW_BLOCKED,    // User is blocked
 };
 
 // void guiThread(std::atomic<bool>& run, std::atomic<GuiCommand>& gui_command);

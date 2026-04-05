@@ -178,6 +178,7 @@ void guiThread(
             }
 
             case GuiCommand::DRAW_UNKOWN: {
+                // WHEN AN UNKNOWN CARD IS SCANNED
                 drawBackground(renderer, red);
                 drawTextCentered(renderer, font_medium, "Ukjent kort!", 150, white);
                 drawTextCentered(renderer, font_small, "Venligst kontakt Kasper :p", 260, white);
@@ -187,7 +188,19 @@ void guiThread(
                 break;
             }
 
+            case GuiCommand::DRAW_BLOCKED: { 
+                // WHEN A BLOCKED USER SCANS THEIR CARD
+                drawBackground(renderer, red);
+                drawTextCentered(renderer, font_medium, "Brukeren er svartelistet!", 100, white);
+                drawTextCentered(renderer, font_small, "Er dette en feil kan du benytte deg av krysselisten", 260, white);
+                display.clear();
+                display.drawString(0, 0, "Bruker svart!");
+                display.display();
+                break;
+            }
+
             case GuiCommand::DRAW_END: {
+                // WHEN THE RESET CARD IS SCANNED
                 drawBackground(renderer, turk);
                 drawTextCentered(renderer, font_medium, "Data lagret!", 150, white);
                 drawTextCentered(renderer, font_small, "Kriteliste sendt til barsjef", 260, white);

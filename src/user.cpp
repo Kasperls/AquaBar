@@ -1,8 +1,8 @@
 #include "user.h"
 
 
-User::User(const std::string& user_name, std::string id, int amout)
-    : name(user_name), rfid(id), spending(amout) {
+User::User(const std::string& user_name, std::string id, int amout, bool blocked)
+    : name(user_name), rfid(id), spending(amout), blocked(blocked) {
 };
 
 void User::addSpending(int value) {
@@ -13,6 +13,10 @@ void User::setSpending(int value) {
     spending = value;
 }
 
+bool User::isBlocked() {
+    return blocked;
+}
+
 std::string User::getPrintableData(bool print_id) const {
     std::string return_text = "Name: ";
     return_text += name;
@@ -21,6 +25,8 @@ std::string User::getPrintableData(bool print_id) const {
     if (print_id) {
         return_text += ", RFID: ";
         return_text += rfid;
+        return_text += ", Svart: ";
+        return_text += blocked;
     }
     
     return return_text;
