@@ -1,5 +1,6 @@
 build/
 res/backups/*
+res/data.csv
 !res/backups/.gitkeep
 .VSCodeCounter/
 python/config.py
