@@ -13,18 +13,18 @@
 #include <iostream>
 #include <sstream>
 
-#ifdef __linux__
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <linux/input.h>
 #include <unistd.h>
 #include <fcntl.h>
-#endif
+#include <lgpio.h>
 
 #include <unistd.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include <pigpio.h>
+// #include <pigpio.h> DEPRECATED
+
 
 #define PIN_VALUE_35 26
 #define PIN_VALUE_20 13
@@ -121,24 +121,22 @@ void inputThread(
 int main()
 {
     // --- --- --- STARTUP SEQUENCE --- --- ---
-    int gpio_result = gpioInitialise();
-    std::cout << "GPIO init result: " << gpio_result << std::endl;
-    if (gpio_result < 0)
+    // Open the GPIO chip (use 0 for /dev/gpiochip0, which is the default on Raspberry Pi)
+    int lgio_handle = lgGpiochipOpen(0);
+    std::cout << "GPIO init result: " << lgio_handle << std::endl;
+    if (lgio_handle < 0)
     {
-        std::cout << "Failed to initialise pigpio!" << std::endl;
+        std::cout << "Failed to initialise lgpio!" << std::endl;
         return 1;
     }
 
-    gpioSetMode(PIN_VALUE_35, PI_INPUT); // set pin as output
-    gpioSetPullUpDown(PIN_VALUE_35, PI_PUD_UP);
-    gpioSetMode(PIN_VALUE_20, PI_INPUT);
-    gpioSetPullUpDown(PIN_VALUE_20, PI_PUD_UP);
-    gpioSetMode(PIN_VALUE_05, PI_INPUT);
-    gpioSetPullUpDown(PIN_VALUE_05, PI_PUD_UP);
-    gpioSetMode(RESET_PIN, PI_INPUT);
-    gpioSetPullUpDown(RESET_PIN, PI_PUD_UP);
+    // Claim pins as inputs with pull-up resistors
+    lgGpioClaimInput(lgio_handle, LG_SET_PULL_UP, PIN_VALUE_35);
+    lgGpioClaimInput(lgio_handle, LG_SET_PULL_UP, PIN_VALUE_20);
+    lgGpioClaimInput(lgio_handle, LG_SET_PULL_UP, PIN_VALUE_05);
+    lgGpioClaimInput(lgio_handle, LG_SET_PULL_UP, RESET_PIN);
 
-    std::cout << "Running on RP" << std::endl;
+    std::cout << "Test if lgpio works" << std::endl;
 
     UserManager user_manager = UserManager{"/home/piaqua/Desktop/AquaBar/res/data.csv"};
     // user_manager.printUsers();
