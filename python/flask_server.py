@@ -7,6 +7,9 @@ import os
 import threading
 import signal
 
+import subprocess
+import re
+
 from functools import wraps
 
 from flask import Flask, jsonify, request, render_template, send_file, session, redirect, url_for, flash
@@ -228,13 +231,16 @@ def download_csv():
     return send_file(DATA_PATH, as_attachment=True, mimetype="text/csv")
 
 
-if __name__ == "__main__":
-    # Bind to all interfaces so Tailscale can reach it
-    # Password protection + Tailscale encryption provides security
-    # Access via Tailscale: http://raspberrypi:5000
+def get_tailscale_ip():
+    result = subprocess.run(["tailscale", "ip", "-4"], capture_output=True, text=True)
+    ip = result.stdout.strip()
+    if re.match(r"100\.\d+\.\d+\.\d+", ip):
+        return ip
+    raise RuntimeError("Could not get Tailscale IP — is Tailscale running?")
 
-    print("Starting Flask server on 0.0.0.0:5000")
-    print("Access via Tailscale: http://raspberrypi:5000")
-    print("Login password: admin")
-    app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
+
+if __name__ == "__main__":
+    host = get_tailscale_ip()
+    print(f"Flask binding to Tailscale IP: {host}")
+    app.run(host=host, port=5000, debug=False, threaded=True)
 
