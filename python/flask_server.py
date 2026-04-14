@@ -271,12 +271,17 @@ def delete_backup(filename):
     return jsonify({"deleted": True})
 
 
-def get_tailscale_ip():
-    result = subprocess.run(["tailscale", "ip", "-4"], capture_output=True, text=True)
-    ip = result.stdout.strip()
-    if re.match(r"100\.\d+\.\d+\.\d+", ip):
-        return ip
-    raise RuntimeError("Could not get Tailscale IP — is Tailscale running?")
+import time
+
+def get_tailscale_ip(retries=20, delay=5):
+    for attempt in range(1, retries + 1):
+        result = subprocess.run(["tailscale", "ip", "-4"], capture_output=True, text=True)
+        ip = result.stdout.strip()
+        if re.match(r"100\.\d+\.\d+\.\d+", ip):
+            return ip
+        print(f"Waiting for Tailscale... attempt {attempt}/{retries}")
+        time.sleep(delay)
+    raise RuntimeError("Tailscale IP not available after waiting.")
 
 
 if __name__ == "__main__":
