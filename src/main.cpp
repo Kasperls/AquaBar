@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <cerrno>
 // #include <pigpio.h> DEPRECATED
 
 
@@ -94,47 +95,69 @@ void inputThread(
     std::string &cl_data)
 {
 
-    int fd = open("/dev/input/by-id/usb-IC_Reader_IC_Reader_08FF20171101-event-kbd", O_RDONLY); // change to your device
-    if (fd < 0)
-    {
-        std::cout << "Failed to open input device!" << std::endl;
-        return;
-    }
-    else
-    {
-        std::cout << "Opened the input device!" << std::endl;
-    }
+    int fd0 = open("/dev/input/by-id/usb-IC_Reader_IC_Reader_08FF20171101-event-kbd", O_RDONLY | O_NONBLOCK);
+    // int fd1 = open("/dev/input/by-id/usb-IC_Reader_IC_Reader_08FF20171101-event-kbd", O_RDONLY | O_NONBLOCK);
 
+    std::vector<int> fd_vec = {fd0};
+
+    for (int& fd : fd_vec) {
+
+        if (fd < 0)
+        {
+            std::cout << "Failed to open input device!" << std::endl;
+            for (int& open_fd : fd_vec) {
+                if (open_fd >= 0) close(open_fd);
+            }
+            return;
+        }
+        else
+        {
+            std::cout << "Opened the input device!" << std::endl;
+        }
+    }
+        
     std::string buffer = "";
     struct input_event ev;
 
     // !!! loop written by claude.ai !!!
     while (run)
-    {
-        read(fd, &ev, sizeof(ev));
+    {   
+        for (int& fd : fd_vec) {
 
-        if (ev.type == EV_KEY && ev.value == 1)
-        {
-            if (ev.code == KEY_ENTER)
-            {
-                std::cout << "Buffer: " << buffer << " size: " << buffer.size() << std::endl;
-                if (buffer.size() == 10)
-                {
-                    {
-                        std::lock_guard<std::mutex> lock(cl_data_mutex);
-                        cl_data = buffer;
-                    }
-                    cl_command = ClCommand::RFID_SCANNED;
-                }
-                buffer = "";
+            ssize_t n = read(fd, &ev, sizeof(ev));
+            if (n < 0) {
+                if (errno == EAGAIN || errno == EWOULDBLOCK) continue;
+                break; // real error
             }
-            else
+            if (n == 0) continue;
+
+            if (ev.type == EV_KEY && ev.value == 1)
             {
-                buffer += keycodeToChar(ev.code);
+                if (ev.code == KEY_ENTER)
+                {
+                    std::cout << "Buffer: " << buffer << " size: " << buffer.size() << std::endl;
+                    if (buffer.size() == 10)
+                    {
+                        {
+                            std::lock_guard<std::mutex> lock(cl_data_mutex);
+                            cl_data = buffer;
+                        }
+                        cl_command = ClCommand::RFID_SCANNED;
+                    }
+                    buffer = "";
+                }
+                else
+                {
+                    buffer += keycodeToChar(ev.code);
+                }
             }
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
-    close(fd);
+    
+    for (int& fd : fd_vec) {
+        close(fd);
+    }
 }
 
 int main()
