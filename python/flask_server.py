@@ -231,6 +231,46 @@ def download_csv():
     return send_file(DATA_PATH, as_attachment=True, mimetype="text/csv")
 
 
+@app.route("/backups", methods=["GET"])
+@login_required
+def list_backups():
+    files = sorted(
+        (f for f in os.listdir(BACKUP_DIR) if f.endswith(".csv")),
+        reverse=True,
+    )
+    return jsonify({"backups": files})
+
+
+@app.route("/backups/<filename>", methods=["GET"])
+@login_required
+def load_backup(filename):
+    if filename != os.path.basename(filename):
+        return jsonify({"error": "Invalid filename"}), 400
+    path = os.path.join(BACKUP_DIR, filename)
+    if not os.path.exists(path):
+        return jsonify({"error": "Backup not found"}), 404
+    users = []
+    with open(path, newline="", encoding="utf-8") as csv_file:
+        reader = csv.reader(csv_file)
+        for row in reader:
+            user = normalize_user_row(row)
+            if user is not None:
+                users.append(user)
+    return jsonify({"users": users, "stats": build_stats(users)})
+
+
+@app.route("/backups/<filename>", methods=["DELETE"])
+@login_required
+def delete_backup(filename):
+    if filename != os.path.basename(filename):
+        return jsonify({"error": "Invalid filename"}), 400
+    path = os.path.join(BACKUP_DIR, filename)
+    if not os.path.exists(path):
+        return jsonify({"error": "Backup not found"}), 404
+    os.remove(path)
+    return jsonify({"deleted": True})
+
+
 def get_tailscale_ip():
     result = subprocess.run(["tailscale", "ip", "-4"], capture_output=True, text=True)
     ip = result.stdout.strip()

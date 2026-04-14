@@ -379,6 +379,71 @@
   .confirm-bar .btn-confirm { background: var(--danger); color: white; }
   .confirm-bar .btn-cancel { background: transparent; color: var(--danger); }
 
+  .viewing-banner {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 1.25rem;
+    background: rgba(30, 107, 60, 0.08);
+    border-bottom: 1px solid #1e6b3c;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+  }
+
+  .viewing-banner.visible { display: flex; }
+
+  .backup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .backup-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1.25rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .backup-toolbar:hover { background: var(--bg); }
+
+  .backup-toolbar > span:first-child {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .backup-toolbar .backup-toggle-icon {
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+
+  .backup-list { display: none; }
+  .backup-list.open { display: block; border-top: 1px solid var(--border); }
+
+  .backup-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .backup-item:last-child { border-bottom: none; }
+
+  .backup-item-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .backup-item-actions { display: flex; gap: 8px; }
+
   .footer {
     margin-top: 2.5rem;
     padding-top: 1rem;
@@ -445,6 +510,10 @@
 </div>
 
 <div class="table-card" id="table-card">
+  <div class="viewing-banner" id="viewing-banner">
+    <span id="viewing-banner-text"></span>
+    <button class="btn" style="font-size:11px; padding:3px 10px;" onclick="clearBackupView()">Tilbake til live data</button>
+  </div>
   <div class="table-toolbar">
     <span id="data-label">users — data.csv (not loaded)</span>
     <div class="toolbar-right">
@@ -468,6 +537,14 @@
       <!-- In Flask: {% for user in users %} <tr>...</tr> {% endfor %} -->
     </tbody>
   </table>
+</div>
+
+<div class="backup-card">
+  <div class="backup-toolbar" onclick="toggleBackupList()">
+    <span>Sikkerhetskopier</span>
+    <span class="backup-toggle-icon" id="backup-toggle-icon">▶</span>
+  </div>
+  <div class="backup-list" id="backup-list"></div>
 </div>
 
 <div class="footer">
@@ -681,6 +758,122 @@
   }
 
   setButtons(false);
+
+  // --- Backup functionality ---
+  let backupListOpen = false;
+
+  async function toggleBackupList() {
+    backupListOpen = !backupListOpen;
+    document.getElementById("backup-list").classList.toggle("open", backupListOpen);
+    document.getElementById("backup-toggle-icon").textContent = backupListOpen ? "▼" : "▶";
+    if (backupListOpen) await refreshBackupList();
+  }
+
+  async function refreshBackupList() {
+    const list = document.getElementById("backup-list");
+    list.innerHTML = "";
+    const loading = document.createElement("div");
+    loading.style.cssText = "padding:1rem 1.25rem; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-faint);";
+    loading.textContent = "Laster...";
+    list.appendChild(loading);
+
+    try {
+      const resp = await fetch("/backups");
+      const data = await resp.json();
+      list.innerHTML = "";
+
+      if (!data.backups.length) {
+        const empty = document.createElement("div");
+        empty.style.cssText = "padding:1rem 1.25rem; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-faint);";
+        empty.textContent = "Ingen sikkerhetskopier funnet.";
+        list.appendChild(empty);
+        return;
+      }
+
+      data.backups.forEach(f => {
+        const item = document.createElement("div");
+        item.className = "backup-item";
+
+        const name = document.createElement("span");
+        name.className = "backup-item-name";
+        name.textContent = f;
+
+        const actions = document.createElement("div");
+        actions.className = "backup-item-actions";
+
+        const viewBtn = document.createElement("button");
+        viewBtn.className = "btn";
+        viewBtn.style.cssText = "font-size:11px; padding:3px 10px;";
+        viewBtn.textContent = "Vis";
+        viewBtn.addEventListener("click", () => viewBackup(f));
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "btn btn-danger";
+        deleteBtn.style.cssText = "font-size:11px; padding:3px 10px;";
+        deleteBtn.textContent = "Slett";
+        deleteBtn.addEventListener("click", () => deleteBackup(f));
+
+        actions.appendChild(viewBtn);
+        actions.appendChild(deleteBtn);
+        item.appendChild(name);
+        item.appendChild(actions);
+        list.appendChild(item);
+      });
+    } catch (e) {
+      list.innerHTML = "";
+      const err = document.createElement("div");
+      err.style.cssText = "padding:1rem 1.25rem; color:var(--danger); font-size:12px;";
+      err.textContent = "Kunne ikke laste sikkerhetskopier.";
+      list.appendChild(err);
+    }
+  }
+
+  async function viewBackup(filename) {
+    try {
+      const resp = await fetch("/backups/" + encodeURIComponent(filename));
+      if (!resp.ok) throw new Error("Failed");
+      const data = await resp.json();
+      users = data.users;
+      dataLoaded = false;
+      searchTerm = "";
+      document.getElementById("search-input").value = "";
+      buildTable();
+      updateBlockSummary();
+      document.getElementById("data-label").textContent = "users — " + filename;
+      document.getElementById("save-button").disabled = true;
+      document.getElementById("add-user-button").disabled = true;
+      document.getElementById("show-rfid-toggle").disabled = false;
+      document.getElementById("search-input").disabled = false;
+      document.getElementById("viewing-banner-text").textContent = "Viser sikkerhetskopi: " + filename;
+      document.getElementById("viewing-banner").classList.add("visible");
+    } catch (e) {
+      setStatus("Kunne ikke laste sikkerhetskopi.");
+    }
+  }
+
+  async function deleteBackup(filename) {
+    if (!confirm("Slett sikkerhetskopi: " + filename + "?")) return;
+    try {
+      const resp = await fetch("/backups/" + encodeURIComponent(filename), { method: "DELETE" });
+      if (!resp.ok) throw new Error("Failed");
+      setStatus("Slettet: " + filename);
+      await refreshBackupList();
+    } catch (e) {
+      setStatus("Kunne ikke slette sikkerhetskopi.");
+    }
+  }
+
+  function clearBackupView() {
+    document.getElementById("viewing-banner").classList.remove("visible");
+    users = [];
+    dataLoaded = false;
+    searchTerm = "";
+    buildTable();
+    updateBlockSummary();
+    document.getElementById("data-label").textContent = "users — data.csv (not loaded)";
+    setButtons(false);
+    setStatus("Trykk 'Hent data' for å laste live data.");
+  }
 
   // Logout functionality
   document.getElementById("logout-btn").addEventListener("click", () => {
