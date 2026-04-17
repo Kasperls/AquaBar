@@ -94,11 +94,10 @@ void inputThread(
     std::mutex &cl_data_mutex,
     std::string &cl_data)
 {
+    int fd0 = open("/dev/input/by-path/platform-3f980000.usb-usb-0:1.1.2:1.0-event-kbd", O_RDONLY | O_NONBLOCK);
+    int fd1 = open("/dev/input/by-path/platform-3f980000.usb-usb-0:1.1.3:1.0-event-kbd", O_RDONLY | O_NONBLOCK);
 
-    int fd0 = open("/dev/input/by-id/usb-IC_Reader_IC_Reader_08FF20171101-event-kbd", O_RDONLY | O_NONBLOCK);
-    // int fd1 = open("/dev/input/by-id/usb-IC_Reader_IC_Reader_08FF20171101-event-kbd", O_RDONLY | O_NONBLOCK);
-
-    std::vector<int> fd_vec = {fd0};
+    std::vector<int> fd_vec = {fd0, fd1};
 
     for (int& fd : fd_vec) {
 
