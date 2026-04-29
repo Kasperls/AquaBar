@@ -2,6 +2,7 @@
 #include <string>
 #include <unordered_map>
 #include <stdexcept>
+#include <iostream>
 
 enum class Group{
     NONE, 
@@ -47,7 +48,8 @@ inline std::string getTextFromGroup(Group group) {
 }
 
 inline Group createGroupFromString(std::string str) {
-    std::string upper = "";
+    std::string upper;
+    std::cout << str << std::endl;
     for (char& c : str) {
         if (!std::isalpha(c)) {
             throw std::invalid_argument("INVALID GROUP NAME");
