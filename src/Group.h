@@ -47,11 +47,16 @@ inline std::string getTextFromGroup(Group group) {
     return (it != table.end()) ? it->second : "NONE";
 }
 
+inline std::string trim(const std::string& s) {
+    size_t start = s.find_first_not_of(" \t\r\n");
+    size_t end   = s.find_last_not_of(" \t\r\n");
+    return (start == std::string::npos) ? "" : s.substr(start, end - start + 1);
+}
+
 inline Group createGroupFromString(std::string str) {
     std::string upper;
-    for (char& c : str) {
+    for (char& c : trim(str)) {
         if (!std::isalpha(c)) {
-            std::cout << c << std::endl;
             throw std::invalid_argument("INVALID GROUP NAME");
         }
         upper.push_back(std::toupper(c));
@@ -76,6 +81,6 @@ inline Group createGroupFromString(std::string str) {
         {"SKP", Group::SKP  }
     };
 
-    auto it = table.find(str);
+    auto it = table.find(upper);
     return (it != table.end()) ? it->second : Group::NONE;
 }
