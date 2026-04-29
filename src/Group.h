@@ -49,9 +49,9 @@ inline std::string getTextFromGroup(Group group) {
 
 inline Group createGroupFromString(std::string str) {
     std::string upper;
-    std::cout << str << std::endl;
     for (char& c : str) {
         if (!std::isalpha(c)) {
+            std::cout << c << std::endl;
             throw std::invalid_argument("INVALID GROUP NAME");
         }
         upper.push_back(std::toupper(c));
