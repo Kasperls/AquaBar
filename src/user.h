@@ -13,7 +13,7 @@ class User
         Group group;
     
     public:
-        User(const std::string& user_name, std::string id, int amout, bool blocked = false, std::string unparsed_group);
+        User(const std::string& user_name, std::string id, int amout, std::string unparsed_group, bool blocked = false);
 
         const std::string& getName() const { return name; };
         const std::string& getRFID() const { return rfid; };

@@ -1,7 +1,7 @@
 #include "user.h"
 
 
-User::User(const std::string& user_name, std::string id, int amout, bool blocked, std::string unparsed_group)
+User::User(const std::string& user_name, std::string id, int amout, std::string unparsed_group, bool blocked)
     : name(user_name), rfid(id), spending(amout), blocked(blocked) {
         group = createGroupFromString(unparsed_group);
 };
