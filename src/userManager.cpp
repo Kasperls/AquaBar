@@ -26,7 +26,7 @@ UserManager::UserManager(const std::string& path_to_data) {
     user_vector.reserve(lineCount);
     
     while (std::getline(data_file, line)) {
-        // "Kasper,3481191757,300,0"
+        // "Kasper,3481191757,300,0,FG"
         std::stringstream ss(line);
         std::string element;
         
@@ -39,7 +39,8 @@ UserManager::UserManager(const std::string& path_to_data) {
             raw_line_vector[0],
             raw_line_vector[1],
             std::stoi(raw_line_vector[2]),
-            std::stoi(raw_line_vector[3]) != 0
+            std::stoi(raw_line_vector[3]) != 0,
+            raw_line_vector[4],
         });
 
     }
@@ -81,7 +82,8 @@ void UserManager::reloadUserManager() {
             raw_line_vector[0],
             raw_line_vector[1],
             0,
-            std::stoi(raw_line_vector[3]) != 0
+            std::stoi(raw_line_vector[3]) != 0,
+            raw_line_vector[4]
         });
     }
 }

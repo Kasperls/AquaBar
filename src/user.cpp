@@ -1,8 +1,9 @@
 #include "user.h"
 
 
-User::User(const std::string& user_name, std::string id, int amout, bool blocked)
+User::User(const std::string& user_name, std::string id, int amout, bool blocked, std::string unparsed_group)
     : name(user_name), rfid(id), spending(amout), blocked(blocked) {
+        group = createGroupFromString(unparsed_group);
 };
 
 void User::addSpending(int value) {
@@ -13,7 +14,7 @@ void User::setSpending(int value) {
     spending = value;
 }
 
-bool User::isBlocked() {
+bool User::isBlocked() const {
     return blocked;
 }
 
@@ -35,6 +36,7 @@ std::string User::getPrintableData(bool print_id) const {
         return_text += rfid;
         return_text += ", Svart: ";
         return_text += blocked;
+        return_text += getTextFromGroup(group);
     }
     
     return return_text;

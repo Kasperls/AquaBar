@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Group.h"
 
 /// @brief Created and managed by UserManager
 class User
@@ -9,9 +10,10 @@ class User
         std::string rfid; 
         int spending;
         bool blocked;
+        Group group;
     
     public:
-        User(const std::string& user_name, std::string id, int amout, bool blocked = false);
+        User(const std::string& user_name, std::string id, int amout, bool blocked = false, std::string unparsed_group);
 
         const std::string& getName() const { return name; };
         const std::string& getRFID() const { return rfid; };
@@ -22,7 +24,9 @@ class User
         void addSpending(int value);
         void setSpending(int value);
 
-        bool isBlocked();
+        Group get_group() const { return group; };
+
+        bool isBlocked() const;
 
         std::string getPrintableData(bool print_id = false) const; 
 };

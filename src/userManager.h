@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "user.h"
+#include <map>
 
 // UserManager reads from a file and constructs users 
 // UserManager is the only class that reads or writes 
@@ -11,6 +12,7 @@ class UserManager
     private:
         std::vector<User> user_vector;
         std::string full_path;
+        std::map<std::string, std::vector<User>> group_vector;
     
     
     public:
