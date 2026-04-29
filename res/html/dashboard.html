@@ -257,8 +257,10 @@
     padding: 10px 1.25rem;
     text-align: left;
     border-bottom: 1px solid var(--border);
-    width: 25%;
+    width: 30.67%;
   }
+
+  thead th:last-child { width: 8%; }
 
   thead th:nth-child(3) { text-align: center; }
 
@@ -640,7 +642,7 @@
       currentSort.ascending = !currentSort.ascending;
     } else {
       currentSort.key = key;
-      currentSort.ascending = true;
+      currentSort.ascending = false;
     }
 
     clearSortIndicators();

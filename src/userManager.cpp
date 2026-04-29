@@ -112,14 +112,16 @@ void UserManager::saveData(bool reset_value) {
             file << user.getName() << "," 
             << user.getRFID() << "," 
             << "0" << ","
-            << "0" << "\n";
+            << "0" << ","
+            << getTextFromGroup(user.get_group()) << "\n";
         }
     } else {
         for (const User& user : user_vector) {
             file << user.getName() << "," 
             << user.getRFID() << "," 
             << user.getSpending() << ","
-            << user.isBlockedStr() << "\n";
+            << user.isBlockedStr() << ","
+            << getTextFromGroup(user.get_group()) << "\n";
         }
     }
     file.close();
