@@ -257,10 +257,10 @@
     padding: 10px 1.25rem;
     text-align: left;
     border-bottom: 1px solid var(--border);
-    width: 33.33%;
+    width: 25%;
   }
 
-  thead th:last-child { text-align: center; }
+  thead th:nth-child(3) { text-align: center; }
 
   tbody tr {
     border-bottom: 1px solid var(--border);
@@ -300,6 +300,12 @@
   }
 
   .blocked-cell { text-align: center; }
+
+  .gjeng-cell {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
 
   .blocked-cell input[type="checkbox"] {
     width: 16px;
@@ -531,6 +537,7 @@
         <th class="sortable" onclick="setSort('name')">Navn <span class="sort-indicator" id="sort-name"></span></th>
         <th class="sortable" onclick="setSort('spent')">Kritet <span class="sort-indicator" id="sort-spent"></span></th>
         <th class="sortable" onclick="setSort('blocked')">Svartelistet <span class="sort-indicator" id="sort-blocked"></span></th>
+        <th class="sortable" onclick="setSort('gjeng')">Gjeng <span class="sort-indicator" id="sort-gjeng"></span></th>
       </tr>
     </thead>
     <tbody id="user-table">
@@ -587,6 +594,12 @@
           return currentSort.ascending ? lhs - rhs : rhs - lhs;
         }
 
+        if (key === "gjeng") {
+          lhs = String(a.gjeng || "").toLowerCase();
+          rhs = String(b.gjeng || "").toLowerCase();
+          return currentSort.ascending ? lhs.localeCompare(rhs) : rhs.localeCompare(lhs);
+        }
+
         return 0;
       });
     }
@@ -603,7 +616,8 @@
         "<td class='spent-cell'>" + user.spent + "</td>" +
         "<td class='blocked-cell'>" +
           "<input type='checkbox' data-id='" + user.rfid + "' " + (user.blocked ? "checked" : "") + " onchange='onBlockedChange(this)'>" +
-        "</td>";
+        "</td>" +
+        "<td class='gjeng-cell'>" + (user.gjeng || "—") + "</td>";
       tbody.appendChild(tr);
     });
   }
@@ -616,7 +630,7 @@
   }
 
   function clearSortIndicators() {
-    ["name", "spent", "blocked"].forEach((key) => {
+    ["name", "spent", "blocked", "gjeng"].forEach((key) => {
       document.getElementById(`sort-${key}`).textContent = "";
     });
   }

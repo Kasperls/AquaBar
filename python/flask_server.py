@@ -87,11 +87,14 @@ def normalize_user_row(row):
         blocked_value = str(row[3]).strip().lower()
         blocked = blocked_value in ("1", "true", "yes", "blocked", "x")
 
+    gjeng = row[4].strip() if len(row) >= 5 else ""
+
     return {
         "name": name,
         "rfid": rfid,
         "spent": spent,
         "blocked": blocked,
+        "gjeng": gjeng,
     }
 
 
@@ -129,6 +132,7 @@ def write_users(users):
                 user["rfid"],
                 str(user.get("spent", 0)),
                 "1" if user.get("blocked") else "0",
+                user.get("gjeng", ""),
             ])
     os.replace(temp_path, DATA_PATH)
 
@@ -196,6 +200,7 @@ def save_data():
                 "rfid": rfid,
                 "spent": spent,
                 "blocked": bool(raw.get("blocked", False)),
+                "gjeng": str(raw.get("gjeng", "")).strip(),
             })
 
         if not users:
